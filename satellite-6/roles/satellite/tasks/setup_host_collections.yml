@@ -1,0 +1,25 @@
+---
+- name: Setup Host Collections
+  shell: |
+    test -f ~/.hammer/host_collections.yml || \
+    (
+    hcs=$(hammer --output=yaml host-collection list \
+      --organization-id `cat ~/.hammer/orgid.txt` | sed -nr 's/.*Name: (.+)$/,\1,/p')
+    {% for hc in satellite.host_collections if hc.name -%}
+    echo "${hcs}" | grep -qE '^{{ hc.name }}$' 2>/dev/null || \
+    hammer host-collection create --organization-id `cat ~/.hammer/orgid.txt` --name {{ hc.name }} \
+      {{ '--description "%s"' % hc.description if hc.description }} \
+      {{ '--max-content-hosts %s' % hc.max if hc.max }} \
+      {{ '--systems %s' % hc.hosts|join(',') if hc.hosts }}
+    {% endfor %}
+    hammer --output=yaml host-collection list --organization-id `cat ~/.hammer/orgid.txt` \
+      > ~/.hammer/host_collections.yml
+    )
+  with_items: satellite.host_collections
+  changed_when: false
+  when:
+    - satellite.host_collections is defined
+    - satellite.host_collections
+    - satellite.host_collections is sequence
+
+# vim:sw=2:ts=2:et:

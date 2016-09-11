@@ -1,0 +1,20 @@
+---
+- name: Setup Satellite locations
+  shell: |
+    test -f ~/.hammer/locations.yml || \
+    (
+    locations=$(hammer --csv location list)
+    {% for loc in satellite.locations if loc.name -%}
+    echo "${locations}" | grep -qE ',{{ loc.name }},$' 2>/dev/null || \
+      hammer location create --name {{ loc.name }} {{ "--label '%s'" % loc.label if loc.label }}
+    {% endfor %}
+    hammer --output=yaml location list > ~/.hammer/locations.yml
+    )
+  with_items: satellite.locations
+  changed_when: false
+  when:
+    - satellite.locations is defined
+    - satellite.locations
+    - satellite.locations is sequence
+
+# vim:sw=2:ts=2:et:

@@ -1,0 +1,23 @@
+---
+# This playbook will run before Satellite or Satellite Capsule installation.
+
+- name: Check if it can access RH CDN
+  command: |
+    curl -v --cacert /etc/rhsm/ca/redhat-uep.pem --connect-timeout 3 https://cdn.redhat.com
+  changed_when: false
+  when:
+    - not disconnected_satellite
+    - proxy.fqdn is not defined
+
+- name: Check if it can access RH CDN via HTTP Proxy
+  command: |
+    curl -v --cacert /etc/rhsm/ca/redhat-uep.pem --connect-timeout 3 \
+      --proxy {{ "http://%s:%s" % (proxy.fqdn, proxy.port|default('8080')) }} \
+      {{ " --proxy-user %s:%s" % (proxy.user, proxy.password) if proxy.user and proxy.password }} \
+      https://cdn.redhat.com
+  changed_when: false
+  when:
+    - not disconnected_satellite
+    - proxy.fqdn is defined
+
+# vim:sw=2:ts=2:et:

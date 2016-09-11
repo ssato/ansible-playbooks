@@ -1,0 +1,32 @@
+---
+- name: Enable Yum repos
+  shell: |
+    {% for repo in satellite.repos if repo.name -%}
+    hammer repository-set enable --organization-id `cat ~/.hammer/orgid.txt` \
+      --basearch {{ repo.arch|default('x86_64') }} \
+      --product '{{ repo.product|default("Red Hat Enterprise Linux Server") }}' \
+      --name '{{ repo.name }}' \
+      {{ '--releasever %s' % repo.releasever if repo.releasever }}
+    {% endfor %}
+  changed_when: false
+  when:
+    - satellite.repos is defined
+    - satellite.repos
+    - satellite.repos is sequence
+
+- name: Setup Sync plan
+  shell: |
+    hammer sync-plan info --organization-id `cat ~/.hammer/orgid.txt` --name 'Daily Sync' || \
+    hammer sync-plan create --organization-id `cat ~/.hammer/orgid.txt` --interval daily \
+      --name 'Daily Sync' --enabled true --sync-date `date --iso-8601=seconds`
+    {% for prod in satellite.products if prod.name -%}
+    hammer product set-sync-plan --organization-id `cat ~/.hammer/orgid.txt` \
+      --name '{{ prod.name }}' --sync-plan-id 1
+    {% endfor %}
+  changed_when: false
+  when:
+    - satellite.products is defined
+    - satellite.products
+    - satellite.products is sequence
+
+# vim:sw=2:ts=2:et:

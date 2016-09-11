@@ -1,0 +1,16 @@
+---
+- name: run satellite-installer
+  command: |
+    satellite-installer --scenario satellite \
+      {{ "--foreman-admin-username=%s" % satellite.admin.username if satellite.admin.username }} \
+      {{ "--foreman-admin-email=%s" % satellite.admin.email if satellite.admin.email }} \
+      {{ "--foreman-admin-first-name=%s" % satellite.admin.first_name if satellite.admin.first_name }} \
+      {{ "--foreman-admin-last-name=%s" % satellite.admin.last_name if satellite.admin.last_name }} \
+      {{ satellite.installer_extra_options|default('') }}
+  changed_when: false
+
+- name: hammer ping
+  command: hammer ping
+  changed_when: false
+
+# vim:sw=2:ts=2:et:

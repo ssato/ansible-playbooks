@@ -1,0 +1,13 @@
+---
+- name: Upload Satellite Manifest
+  command: |
+    hammer subscription upload --file {{ satellite.manifest.path }} \
+      {{ '--organization "%s"' % satellite.manifest.organization if satellite.manifest.organization else '--organization-id `cat ~/.hammer/orgid.txt`'  }}
+  changed_when: false
+  when:
+    - satellite.manifest is defined
+    - satellite.manifest
+    - satellite.manifest.path is defined
+    - satellite.manifest.path
+
+# vim:sw=2:ts=2:et:

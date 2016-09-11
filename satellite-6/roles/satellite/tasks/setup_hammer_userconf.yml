@@ -1,0 +1,20 @@
+---
+
+- name: Ensure hammer user configuration dir exists
+  file: path={{ ansible_env.HOME }}/.hammer/ state=directory mode=0700
+
+- name: Check if hammer user configuration file exists already
+  stat: path={{ ansible_env.HOME }}/.hammer/cli_config.yml
+  register: hammer_userconf_stat
+
+- name: Setup hammer user configuration
+  shell: |
+    install -m 0600 /etc/hammer/cli.modules.d/foreman.yml ~/.hammer/cli_config.yml
+    cat << EOF >> ~/.hammer/cli_config.yml
+      :username: {{ satellite.admin.username|default('admin') }}
+      :passowrd: $(sed -nr 's/^ *admin_password: ([^[:blank:]]+) *$/\1/p' /etc/hammer/cli.modules.d/foreman.yml)
+    EOF
+  changed_when: false
+  when: not hammer_userconf_stat.exits
+
+# vim:sw=2:ts=2:et:

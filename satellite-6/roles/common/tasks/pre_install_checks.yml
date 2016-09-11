@@ -1,0 +1,42 @@
+---
+# This playbook will run before Satellite or Satellite Capsule installation.
+
+- name: Check if FQDN is set correctly
+  shell: 'test "x$(hostname -f)" = "x{{ fqdn }}"'
+  changed_when: false
+
+- name: Check if chrony or ntp is installed and configured
+  shell: |
+    rpm -q chrony && (systemctl is-enabled chronyd && chronyc sources) || \
+    (rpm -q ntp && systemctl is-enabled ntpd && ntptime)
+  changed_when: false
+
+- name: Check if required TCP/IPv4 ports open
+  shell: "echo '' | nc -w 3 --send-only -4 {{ service_ip or ansible_hostname }} {{ item }}"
+  changed_when: false
+  with_items: "{{ tcp_ports }}"
+
+- name: Check if required UDP/IPv4 ports open
+  shell: "echo '' | nc -w 3 --send-only -4u {{ service_ip or ansible_hostname }} {{ item }}"
+  changed_when: false
+  with_items: "{{ udp_ports }}"
+
+- name: Check if conflicting software are not installed
+  shell: '{{ item }} 2>/dev/null >/dev/null && false || true'
+  changed_when: false
+  with_items:
+    - java -version
+    - puppet help
+
+## TODO: Currently, it only lists yum repos enabled and does not check actually.
+- name: Check if conflicting yum repos are not enabled
+  command: yum repolist
+  changed_when: false
+
+# TODO:
+# - name: Check if enough disk space is reserved
+#   shell: |
+#     test $(du -c /root/ | sed -nr '$s/^([^[:blank:]]+).*/\1/p') -gt $(( 50 * 1024 * 1024 ))
+#     changed_when: false
+
+# vim:sw=2:ts=2:et:

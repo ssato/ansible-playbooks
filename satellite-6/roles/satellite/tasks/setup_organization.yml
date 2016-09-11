@@ -1,0 +1,14 @@
+---
+- name: Setup Satellite Organization
+  shell: |
+    test -f ~/.hammer/orgid.txt || \
+    (
+    hammer --csv organization list | grep -qE ',{{ satellite.organization }},$' 2>/dev/null || \
+    hammer organization create --name {{ satellite.organization }} \
+      {{ "--label '%s'" % satellite.organization_label if satellite.organization_label }}
+    hammer --output=yaml organization info --name "{{ satellite.organization }}" | \
+      sed -nr "s/^Id: //p" > ~/.hammer/orgid.txt.t && mv ~/.hammer/orgid.txt.t ~/.hammer/orgid.txt
+    )
+  changed_when: false
+
+# vim:sw=2:ts=2:et:

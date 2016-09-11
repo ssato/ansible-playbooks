@@ -1,0 +1,96 @@
+# vim:ft=yaml:sw=2:ts=2:et:
+
+sm_register: true
+disconnected_satellite: false
+
+# If it access RH CDN via HTTP proxy:
+# proxy:
+#   fqdn: proxy.example.com
+#   #port: 8080
+#   #user: jdoe
+#   #password: s3cr@t
+
+# @see
+# - Satellite 6.2 Installation Guide, Chapter 2.5 Ports and firewalls
+#   requirements: http://red.ht/2ctGzPE
+# - Satellite 6.2 Architecture Guide, 2.3 Casule Networking:
+#   http://red.ht/2c0Xtji
+#
+tcp_ports:
+  # It must be opened to run ansible playbooks if not localhost.
+  #- 22
+  # Clients -> Satellite
+  - 80
+  - 443
+  - 5647
+  - 8140
+  # Clients -> Integrated Capsule
+  - 8000
+  - 9090
+  # Isolated Capsule -> Satellite
+  - 5646
+  # Others (Integrated Docker registry access, etc.)
+  - 5000
+
+udp_ports:
+  # Clients -> Integrated Capsule
+  # TODO: Check if ports 67 and 68 are required.
+  - 53
+  - 67
+  - 68
+  - 69
+
+satellite:
+  admin:
+    username:
+    password:
+    email:
+    first_name:
+    last_name:
+  installer_extra_options:
+
+  organization:
+  locations: []
+  # locations:
+  #   - name: tokyo
+  #     label: Tokyo
+  #   - name: osaka
+
+  lifecycle_environments:
+    - name: Test
+    - name: Prod
+      label: Production
+
+  host_collections: []
+  # host_collections:
+  #  - name: host_collection_A
+  #    description: Host Collection A
+  #    max: 11
+  #    systems:
+  #      - host-a-0
+  #      - host-a-1
+
+  manifest:
+    path:
+    #organization:
+
+  products:
+    - name: Red Hat Enterprise Linux Server
+      sync: true
+    - name: Red Hat Satellite
+
+  content_views: []
+  #content_views:
+  #  - name:
+  #    label:
+  #    description:
+  #    repos:
+  #      - name:
+  #        product:
+
+  activation_keys: []
+  #activation_keys:
+  #  - name: akey_0
+  #    host_collections:
+  #      - host_collection_A
+

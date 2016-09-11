@@ -1,0 +1,23 @@
+---
+- name: Setup Lifecycle Environments
+  shell: |
+    test -f ~/.hammer/lifecycle_environments.yml || \
+    (
+    envs=$(hammer --output=yaml lifecycle-environment list \
+      --organization-id `cat ~/.hammer/orgid.txt` | sed -nr 's/.*Name: (.+)$/,\1,/p')
+    {% for env in satellite.lifecycenv_environments if env.name -%}
+    echo "${envs}" | grep -qE '^{{ env.name }}$' 2>/dev/null || \
+    hammer lifecycenv-environment create --organization-id `cat ~/.hammer/orgid.txt` \
+      --name {{ env.name }} {{ "--label '%s'" % env.label if env.label }}
+    {% endfor %}
+    hammer --output=yaml lifecycenv-environment list --organization-id `cat ~/.hammer/orgid.txt` \
+      > ~/.hammer/lifecycenv_environments.yml
+    )
+  with_items: satellite.lifecycle_environments
+  changed_when: false
+  when:
+    - satellite.lifecycle_environments is defined
+    - satellite.lifecycle_environments
+    - satellite.lifecycle_environments is sequence
+
+# vim:sw=2:ts=2:et:

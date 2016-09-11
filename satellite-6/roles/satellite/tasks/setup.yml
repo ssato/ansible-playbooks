@@ -1,0 +1,16 @@
+---
+- include: setup_hammer_userconf.yml
+
+- include: setup_organization.yml
+- include: setup_locations.yml
+- include: setup_lifecycle_envs.yml
+- include: setup_host_collections.yml
+# TODO:
+#- include: setup_users.yml
+
+- include: upload_manifest.yml
+- include: setup_yum_repos.yml
+- include: setup_content_views.yml
+- include: setup_activation_keys.yml
+
+# vim:sw=2:ts=2:et:

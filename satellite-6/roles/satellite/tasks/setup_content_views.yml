@@ -1,0 +1,28 @@
+---
+- name: Setup Content Views
+  shell: |
+    test -f ~/.hammer/content_views.yml || \
+    (
+    cvs=$(hammer --output=yaml content-view list --organization-id `cat ~/.hammer/orgid.txt` | \
+      sed -nr 's/.*Name: (.)$/,\1,/p')
+    {% for cv in satellite.content_views if cv.name -%}
+    echo "${content_views}" | grep -qE '^{{ cv.name }}$' 2>/dev/null || \
+      hammer content-view create --organization-id `cat ~/.hammer/orgid.txt` \
+        --name {{ cv.name }} \
+        --label {{ cv.label if cv.label else cv.name|replace(' ', '_') }}
+        {{ '--description "%s"' % cv.description if cv.description }}
+    {%     for repo in cv.repos if repo.name and repo.product -%}
+    hammer content-view add-repository --organization-id `cat ~/.hammer/orgid.txt` \
+      --name '{{ cv.name }}' --repository '{{ repo.name }}' --product '{{ repo.product }}'
+    {%     endfor %}
+    {% endfor %}
+    hammer --output=yaml content-view list --organization-id `cat ~/.hammer/orgid.txt` > ~/.hammer/content_views.yml
+    )
+  with_items: satellite.content_views
+  changed_when: false
+  when:
+    - satellite.content_views is defined
+    - satellite.content_views
+    - satellite.content_views is sequence
+
+# vim:sw=2:ts=2:et:

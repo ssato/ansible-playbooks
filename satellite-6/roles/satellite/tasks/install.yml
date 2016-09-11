@@ -1,0 +1,16 @@
+---
+- name: Install Satellite RPMs
+  shell: |
+    rpm -q satellite || \
+    (
+    test -f {{ satellite_iso_path }} && \
+    (
+    trap "umount /mnt" INT TERM && \
+      mount -o ro,loop {{ satellite_iso_path }} /mnt && cd /mnt && ./install_packages
+    cd - && umount /mnt
+    ) || yum install -y satellite
+    )
+  changed_when: false
+  notify: run satellite-installer
+
+# vim:sw=2:ts=2:et:

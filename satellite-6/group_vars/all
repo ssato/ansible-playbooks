@@ -1,0 +1,6 @@
+# vim:ft=yaml:sw=2:ts=2:et:
+ansible_become: true
+
+# Path to Satellite 6.x.y Binary DVD ISO image available from:
+# https://access.redhat.com/downloads/content/250/ver=6.2/rhel---7/6.2.1/x86_64/product-software
+satellite_iso_path: /path/to/satellite_iso_image
