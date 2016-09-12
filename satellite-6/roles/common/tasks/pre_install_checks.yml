@@ -5,6 +5,12 @@
   shell: 'test "x$(hostname -f)" = "x{{ fqdn }}"'
   changed_when: false
 
+- name: Check if SELinux is in enforcing mode
+  command: /sbin/getenforce
+  register: getenforce_rc
+  changed_when: false
+  failed_when: getenforce_rc.stdout != 'Enforcing'
+
 - name: Check if chrony or ntp is installed and configured
   shell: |
     rpm -q chrony && (systemctl is-enabled chronyd && chronyc sources) || \
