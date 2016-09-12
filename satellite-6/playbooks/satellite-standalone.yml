@@ -1,0 +1,9 @@
+---
+
+- name: Install and setup Satellite
+  hosts: satellite
+  roles:
+    - common
+    - satellite
+
+# vim:sw=2:ts=2:et:
