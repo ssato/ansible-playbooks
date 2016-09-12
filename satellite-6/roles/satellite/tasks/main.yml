@@ -5,3 +5,8 @@
     - do_setup is defined
     - do_setup
 
+- include: sync.yml
+  when:
+    - do_sync is defined
+    - do_sync
+

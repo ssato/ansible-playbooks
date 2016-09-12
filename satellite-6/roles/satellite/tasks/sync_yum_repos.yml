@@ -1,0 +1,29 @@
+---
+- name: Synchronize Yum repos by products
+  shell: |
+    {% for prod in satellite.products if prod.name and (prod.sync or prod.sync is not defined) -%}
+    hammer product synchronize --organization-id `cat ~/.hammer/orgid.txt` --name '{{ prod.name }}' \
+      {{ '--async' if not (prod.sync_mode is defined and prod.sync_mode == 'sync') }}
+    {% endfor %}
+  changed_when: false
+  when:
+    - satellite.products is defined
+    - satellite.products is sequence
+    - satellite.products
+
+- name: Synchronize Yum repos by repositories
+  shell: |
+    {% for repo in satellite.repos if repo.name and (repo.sync or repo.sync is not defined) -%}
+    hammer repository synchronize --organization-id `cat ~/.hammer/orgid.txt` --name '{{ repo.name }}' \
+      --basearch {{ repo.arch|default('x86_64') }} \
+      --product '{{ repo.product|default("Red Hat Enterprise Linux Server") }}' \
+      {{ '--releasever %s' % repo.releasever if repo.releasever }} \
+      {{ '--async' if not (repo.sync_mode is defined and repo.sync_mode == 'sync') }}
+    {% endfor %}
+  changed_when: false
+  when:
+    - satellite.repos is defined
+    - satellite.repos is sequence
+    - satellite.repos
+
+# vim:sw=2:ts=2:et:

@@ -3,6 +3,9 @@
 sm_register: true
 disconnected_satellite: false
 
+do_setup: false
+do_sync: false
+
 # If it access RH CDN via HTTP proxy:
 # proxy:
 #   fqdn: proxy.example.com
