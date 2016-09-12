@@ -10,7 +10,6 @@
     {% endfor %}
     hammer --output=yaml location list > ~/.hammer/locations.yml
     )
-  with_items: satellite.locations
   changed_when: false
   when:
     - satellite.locations is defined

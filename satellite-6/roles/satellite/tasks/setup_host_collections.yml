@@ -15,7 +15,6 @@
     hammer --output=yaml host-collection list --organization-id `cat ~/.hammer/orgid.txt` \
       > ~/.hammer/host_collections.yml
     )
-  with_items: satellite.host_collections
   changed_when: false
   when:
     - satellite.host_collections is defined

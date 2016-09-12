@@ -18,7 +18,6 @@
     {% endfor %}
     hammer --output=yaml content-view list --organization-id `cat ~/.hammer/orgid.txt` > ~/.hammer/content_views.yml
     )
-  with_items: satellite.content_views
   changed_when: false
   when:
     - satellite.content_views is defined

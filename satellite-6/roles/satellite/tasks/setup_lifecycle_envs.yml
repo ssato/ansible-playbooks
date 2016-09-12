@@ -13,7 +13,6 @@
     hammer --output=yaml lifecycenv-environment list --organization-id `cat ~/.hammer/orgid.txt` \
       > ~/.hammer/lifecycenv_environments.yml
     )
-  with_items: satellite.lifecycle_environments
   changed_when: false
   when:
     - satellite.lifecycle_environments is defined

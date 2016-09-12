@@ -1,0 +1,7 @@
+- include: pre_install_checks.yml
+- include: install.yml
+- include: setup.yml
+  when:
+    - do_setup is defined
+    - do_setup
+
