@@ -1,0 +1,5 @@
+---
+- name: restart virt-whod
+  service: name=virt-who state=restarted
+
+# vim:sw=2:ts=2:et:

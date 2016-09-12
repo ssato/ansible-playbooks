@@ -1,0 +1,28 @@
+---
+
+# TODO: Check and remove 'curl ...' part.
+- name: Install Satellite SSL CA RPM
+  shell: |
+    rpm -qa | grep -E '^katello-ca-consumer-' || \
+    (
+    curl -OL http://{{ satellite_fqdn }}/pub/katello-ca-consumer-latest.noarch.rpm && \
+    yum install -y katello-ca-consumer-latest.noarch.rpm
+    )
+
+- name: Register to Satellite
+  redhat_subscription:
+    - state: present
+    - activationkey: "{{ satellite.activation_key }}"
+    - environment: "{{ satellite.lifecycle_environment }}"
+    - autosubscribe: yes
+
+- name: Ensure virt-who is installed
+  yum: name=virt-who state=present
+
+- service: name=virt-who enabled=yes state=started
+
+- name: Configure VMM backend
+  template: "src=templates/backend.conf.j2 dest=/etc/virt-who.d/backend.conf"
+  notify: restart virt-whod
+
+# vim:sw=2:ts=2:et:

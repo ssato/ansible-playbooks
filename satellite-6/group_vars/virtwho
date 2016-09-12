@@ -1,0 +1,20 @@
+# vim:sw=2:ts=2:et:
+
+vmms:
+  - name:
+    backend:
+    server:
+    username:
+    encrypted_password:
+    # Or
+    # password:
+    list_guests_by_hostname: yes
+    #extra_options: |
+    #  ...
+    #
+
+satellite:
+  organization:
+  lifecycle_environment: Library
+  activation_key:
+

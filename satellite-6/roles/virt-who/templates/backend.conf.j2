@@ -1,0 +1,12 @@
+{% for vmm in vmms if vmm.name -%}
+[{{ vmm.name }}]
+type={{ vmm.backend }}
+server={{ vmm.server }}
+username={{ vmm.username }}
+{{ 'encrypted_password=%s' % vmm.encrypted_password if vmm.encrypted_password else 'password=%s' % vmm.password }}
+owner={{ satellite.organization }}
+env={{ satellite.lifecycle_environment|default('Library') }}
+{{ 'hypervisor_id=hostname' % vmm.list_guests_by_hostname if vmm.list_guests_by_hostname }}
+{{ vmm.extra_options }}
+
+{% endfor -%}
