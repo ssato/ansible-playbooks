@@ -5,5 +5,5 @@ satellite ansible_connection=local service_ip=192.168.122.10 internl_ip=192.168.
 capsule-0 service_ip=192.168.122.11
 capsule-1 service_ip=192.168.122.12
 
-[virtwho]
-virtwho-0
+[virt-who]
+virt-who-0
