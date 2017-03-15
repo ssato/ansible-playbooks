@@ -1,3 +1,5 @@
 [libvirt-hosts]
 #127.0.0.1 ansible_connection=local
-libvirt-host ansible_connection=ssh ansible_become=yes
+#libvirt-host-[0:9] ansible_connection=ssh ansible_become=yes
+#nested-libvirt-host-0 ansible_connection=ssh ansible_become=yes nested_kvm=yes
+

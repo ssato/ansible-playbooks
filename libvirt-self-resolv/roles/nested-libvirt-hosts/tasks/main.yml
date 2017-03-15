@@ -1,4 +1,0 @@
----
-- include: kvm.yml
-#  when: "kvm_device is not defined"
-- include: network.yml
