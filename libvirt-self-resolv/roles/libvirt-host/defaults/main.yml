@@ -1,0 +1,6 @@
+---
+# defaults file for libvirt-host
+libvirt_lab_network_name: lab
+libvirt_lab_network_bridge: virbr10
+libvirt_lab_network_domain: example.com
+libvirt_lab_network_gw_ip: 192.168.125.1

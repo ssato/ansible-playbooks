@@ -1,0 +1,19 @@
+<!-- @see http://libvirt.org/formatnetwork.html -->
+<network>
+  <name>{{ libvirt_lab_network_name }}</name>
+  <bridge name="{{ libvirt_lab_network_bridge }}"/>
+  <forward/>
+  <domain name='{{ libvirt_lab_network_domain }}' localOnly='yes'/>
+  <dns>
+    <host ip='{{ libvirt_lab_network_gw_ip }}'><hostname>ansible</hostname></host>
+    <host ip='192.168.125.101'><hostname>web01</hostname></host>
+    <host ip='192.168.125.102'><hostname>web02</hostname></host>
+  </dns>
+  <ip address='{{ libvirt_lab_network_gw_ip }}' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.125.128' end='192.168.125.254'/>
+      <host mac="52:54:00:12:51:01" name="web01.example.com" ip="192.168.125.101"/>
+      <host mac="52:54:00:12:51:02" name="web02.example.com" ip="192.168.125.102"/>
+    </dhcp>
+  </ip>
+</network>
