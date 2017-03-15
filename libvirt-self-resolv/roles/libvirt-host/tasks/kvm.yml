@@ -1,6 +1,4 @@
 ---
-# This playbook will run before installation.
-
 - name: Ensure libvirt and related packages installed
   package:
     name: "{{ item }}"
@@ -17,8 +15,8 @@
 - name: Check if KVM device is ready
   stat:
     path: /dev/kvm
-  register: kvm_device
   ignore_errors: true
+  register: kvm_device
   tags:
     - kvm
 
