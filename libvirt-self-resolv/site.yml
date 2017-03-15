@@ -1,0 +1,5 @@
+---
+- name: Setup Libvirt Hosts
+  hosts: libvirt-hosts
+  roles:
+    - libvirt-host
