@@ -1,23 +1,41 @@
 ---
-- name: Ensure libvirt and related packages installed
-  package:
-    name: "{{ item }}"
-    state: installed
-  with_items:
-    - NetworkManager
-    - libvirt
-    - libvirt-python
-    - python-lxml  # Required for 'virt_net' module.
-    - qemu-kvm
-  tags:
-    - kvm
+# @see https://fedoraproject.org/wiki/How_to_enable_nested_virtualization_in_KVM
+# @see https://github.com/redhat-openstack/ansible-role-tripleo-parts/blob/master/parts/kvm/tasks/main.yml (Apache License)
 
-- name: Check if KVM device is ready
-  stat:
-    path: /dev/kvm
+- name: Check if Nested KVM is supported
+  command: "grep -q -E '^flags.* (vmx|svm) .*' /proc/cpuinfo"
   ignore_errors: true
-  register: kvm_device
-  tags:
-    - kvm
+  register: is_nested_kvm_supported
+
+- name: Set virt facts
+  set_fact:
+    enable_nested_kvm: "{{ is_nested_kvm_supported|succeeded }}"
+    cpu_vendor: "{{ ansible_processor[0] | regex_replace('(Genuine|Authentic)', '') | lower }}"
+
+- name: Enable Nested KVM support statically
+  copy:
+    dest: /etc/modprobe.d/zz-nested_kvm.conf
+    content: |
+      options kvm_intel nested=1
+      options kvm_amd nested=1
+  when:
+    - enable_nested_kvm
+
+# :seealso: http://docs.ansible.com/ansible/modprobe_module.html
+- name: Ensure KVM kernel module is loaded
+  shell: "test -c /dev/kvm || modprobe kvm"
+
+- name: Check if Nested KVM is enabled
+  shell: "test \"$(cat /sys/module/kvm_*/parameters/nested)\" = '1'"
+  ignore_errors: true
+  register: check_if_nested_kvm_is_enabled
+  when:
+    - enable_nested_kvm
+
+- name: Enable Nested KVM support dynamically 
+  command: "rmmod kvm-{{ cpu_vendor }}; modprobe kvm-{{ cpu_vendor }}"
+  when:
+    - enable_nested_kvm
+    - check_if_nested_kvm_is_enabled|failed
 
 # vim:sw=2:ts=2:et:
