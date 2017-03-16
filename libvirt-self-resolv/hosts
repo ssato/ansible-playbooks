@@ -4,5 +4,4 @@ localhost ansible_connection=local
 
 [libvirt-hosts]
 #libvirt-host-[0:9] ansible_connection=ssh ansible_become=yes
-#nested-libvirt-host-0 ansible_connection=ssh ansible_become=yes enable_nested_kvm=yes
 
