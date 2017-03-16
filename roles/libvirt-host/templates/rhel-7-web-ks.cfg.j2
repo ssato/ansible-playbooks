@@ -1,0 +1,97 @@
+# see also: http://red.ht/hvPnf3
+install
+cdrom
+text
+bootloader
+keyboard --vckeymap=us --xlayouts=us
+lang en_US.UTF-8
+rootpw password
+timezone Asia/Tokyo --isUtc
+selinux --enforcing
+skipx
+authconfig --enableshadow --passalgo=sha512
+firewall --enabled --ssh --http --service=https
+services --enabled firewalld,chrony,sshd
+network --device=eth0 --onboot=yes --bootproto=dhcp
+network --hostname={{ _guest.hostname }}
+zerombr
+clearpart --all --initlabel
+autopart
+reboot
+
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+%end
+
+%packages --ignoremissing
+NetworkManager-config-server
+bash-completion
+bind-utils
+chrony
+elinks
+lftp
+make
+nfs-utils
+pcp
+rsync
+screen
+sos
+strace
+tcpdump
+tmux
+vim-enhanced
+nc
+#
+httpd
+-Red_Hat_Enterprise_Linux-Release_Notes-*
+-acpid
+-alsa*
+-avahi*
+-bluez*
+-bridge-utils
+-conman
+-coolkey
+-dmraid*
+-fetchmail
+-firstboot*
+-fprintd*
+-ftp
+-gpm
+-hunspell*
+-isdn4k*
+-*firmware
+-ledmon
+-mcstrans
+-mdadm
+-nano
+-ntsysv
+-pcsc-lite*
+-ppp
+-psacct
+-radvd
+-rdate
+-rdist
+-rfkill
+-rng-tools
+-rp-pppoe
+-setuptool
+-sgpio
+-system-config-*
+-talk*
+-wpa_supplicant
+%end
+
+%post  --log=/mnt/sysimage/root/ks-post.log
+test -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release && \
+    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release || :
+
+f=/root/.bashrc
+test -f $f && \
+echo "export LC_ALL=en_US.UTF-8" >> $f || \
+(cat << EOF > $f
+test -f /etc/bashrc && . /etc/bashrc || :
+export LC_ALL=en_US.UTF-8
+EOF
+)
+test -d /root/setup || mkdir -p /root/setup
+touch /root/setup/kickstart.post.stamp
+%end
