@@ -7,7 +7,7 @@
   ignore_errors: true
   register: is_nested_kvm_supported
 
-- name: Set virt facts
+- name: Set virt related facts
   set_fact:
     enable_nested_kvm: "{{ is_nested_kvm_supported|succeeded }}"
     cpu_vendor: "{{ ansible_processor[0] | regex_replace('(Genuine|Authentic)', '') | lower }}"
