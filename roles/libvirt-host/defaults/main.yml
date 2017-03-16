@@ -1,22 +1,26 @@
 ---
-# defaults file for libvirt-host
 libvirt_networks:
-  - name: lab
-    create: true
+  - name: default
+    create: false
     state: started
 
-    bridge: virbr10
-    domain: example.com
-    gw_ip: 192.168.125.1
-    gw_hostname: ansible
-    range_start: 192.168.125.128
-    range_end: 192.168.125.254
-    hosts:
-      - ip: 192.168.125.101
-        hostname: web01
-        mac: "52:54:00:12:51:01"
-      - ip: 192.168.125.102
-        hostname: web02
-        mac: "52:54:00:12:51:02"
-
+# Example:
+#  - name: lab
+#    create: true
+#    state: started
+#
+#    bridge: virbr10
+#    domain: example.com
+#    gw_ip: 192.168.125.1
+#    gw_hostname: ansible
+#    range_start: 192.168.125.128
+#    range_end: 192.168.125.254
+#    hosts:
+#      - ip: 192.168.125.101
+#        hostname: web01
+#        mac: "52:54:00:12:51:01"
+#      - ip: 192.168.125.102
+#        hostname: web02
+#        mac: "52:54:00:12:51:02"
+#
 # vim:sw=2:ts=2:et:
