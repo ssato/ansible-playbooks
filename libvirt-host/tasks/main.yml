@@ -1,4 +1,0 @@
----
-- include: install.yml
-- include: kvm.yml
-- include: networks.yml
