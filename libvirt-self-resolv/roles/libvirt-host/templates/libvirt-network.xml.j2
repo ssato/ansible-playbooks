@@ -1,15 +1,15 @@
 <!-- @see http://libvirt.org/formatnetwork.html -->
 <network>
-  <name>{{ item.name }}</name>
-  <bridge name="{{ item.bridge }}"/>
+  <name>{{ _network.name }}</name>
+  <bridge name="{{ _network.bridge }}"/>
   <forward/>
-  <domain name='{{ item.domain }}' localOnly='yes'/>
+  <domain name='{{ _network.domain }}' localOnly='yes'/>
   <dns>
-    <host ip='{{ item.gw_ip }}'><hostname>{{ item.gw_hostname }}</hostname></host>
+    <host ip='{{ _network.gw_ip }}'><hostname>{{ _network.gw_hostname }}</hostname></host>
   </dns>
-  <ip address='{{ item.gw_ip }}' netmask='{{ item.netmask|default("255.255.255.0") }}'>
+  <ip address='{{ _network.gw_ip }}' netmask='{{ _network.netmask|default("255.255.255.0") }}'>
     <dhcp>
-      <range start='{{ item.range_start }}' end='{{ item.range_end }}'/>
+      <range start='{{ _network.range_start }}' end='{{ _network.range_end }}'/>
     </dhcp>
   </ip>
 </network>

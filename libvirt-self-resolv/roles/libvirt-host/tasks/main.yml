@@ -1,6 +1,3 @@
 ---
-- include: nested_kvm.yml
-  when: nested_kvm
-
+- include: install.yml
 - include: kvm.yml
-- include: network.yml

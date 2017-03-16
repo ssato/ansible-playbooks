@@ -2,6 +2,9 @@
 # defaults file for libvirt-host
 libvirt_networks:
   - name: lab
+    create: true
+    state: started
+
     bridge: virbr10
     domain: example.com
     gw_ip: 192.168.125.1

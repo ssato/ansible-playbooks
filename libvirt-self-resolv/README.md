@@ -12,8 +12,6 @@ Requirements
 Role Variables
 --------------
 
-- see roles/libvirt-host/defaults/main.yml
-
 Dependencies
 ------------
 
