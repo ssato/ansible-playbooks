@@ -33,7 +33,7 @@
     - enable_nested_kvm
 
 - name: Enable Nested KVM support dynamically 
-  command: "rmmod kvm-{{ cpu_vendor }}; modprobe kvm-{{ cpu_vendor }}"
+  shell: "lsmod | grep kvm-{{ cpu_vendor }} && rmmod kvm-{{ cpu_vendor }}; modprobe kvm-{{ cpu_vendor }}"
   when:
     - enable_nested_kvm
     - check_if_nested_kvm_is_enabled|failed
