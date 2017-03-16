@@ -5,7 +5,7 @@ libvirt_networks:
     state: started
 
 # Example:
-#  - name: lab
+#  - name: &net_1_name lab
 #    create: true
 #    state: started
 #
@@ -16,11 +16,24 @@ libvirt_networks:
 #    range_start: 192.168.125.128
 #    range_end: 192.168.125.254
 #    hosts:
-#      - ip: 192.168.125.101
-#        hostname: web01
-#        mac: "52:54:00:12:51:01"
-#      - ip: 192.168.125.102
-#        hostname: web02
-#        mac: "52:54:00:12:51:02"
+#      - ip: &guest_1_ip 192.168.125.101
+#        hostname: &guest_1_hostname web01
+#        mac: &guest_mac_1 "52:54:00:12:51:01"
+#      - ip: &guest_2_ip 192.168.125.102
+#        hostname: &guest_2_hostname web02
+#        mac: &guest_mac_2 "52:54:00:12:51:02"
+
+libvirt_guests:
+
+#  - name: web01
+#    description: Web server 01
+#    create: true
 #
+#    hostname: *guest_1_hostname
+#    ip_0: *guest_1_ip
+#
+#    install_type: kickstart
+#    install_script: rhel-7-web-ks.cfg
+#    install_iso: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+
 # vim:sw=2:ts=2:et:
