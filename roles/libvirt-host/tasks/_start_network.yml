@@ -1,0 +1,27 @@
+---
+- name: Check if libvirt networks are started
+  shell: "virsh net-list | grep -qE '^ {{ _network.name }}[[:blank:]]+(active).*'"
+  ignore_errors: true
+  register: check_if_libvirt_network_is_active
+
+- name: Start libvirt netwrok
+  command: "virsh net-start {{ _network.name }}"
+  ignore_errors: true  # Currently, defined but not started networks are not skipped.
+  when:
+    - "{{ _network.start is not defined or 
+         (_network.start is defined and _network.start) }}"
+    - check_if_libvirt_network_is_active|failed
+
+- name: Check if libvirt networks are marked as auto started
+  command: "test -L /etc/libvirt/qemu/networks//autostart/{{ _network.name }}.xml"
+  ignore_errors: true
+  register: check_if_libvirt_network_is_autostart
+
+- name: Set autostart libvirt netwrok
+  command: "virsh net-autostart {{ _network.name }}"
+  when:
+    - "{{ _network.autostart is not defined or 
+         (_network.autostart is defined and _network.autostart) }}"
+    - check_if_libvirt_network_is_autostart|failed
+
+# vim:sw=2:ts=2:et:

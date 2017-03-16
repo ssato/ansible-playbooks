@@ -7,7 +7,17 @@
     - libvirtd
     - NetworkManager
 
-- include: _network.yml
+- include: _create_network.yml
+  with_items: "{{ libvirt_networks }}"
+  loop_control:
+    loop_var: _network
+
+- include: _start_network.yml
+  with_items: "{{ libvirt_networks }}"
+  loop_control:
+    loop_var: _network
+
+- include: _network_extras.yml
   with_items: "{{ libvirt_networks }}"
   loop_control:
     loop_var: _network

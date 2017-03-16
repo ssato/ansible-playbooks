@@ -1,0 +1,26 @@
+---
+# .. note::
+#    virt_net is still in preview state so that I implement this by myself.
+#    :seealso: http://docs.ansible.com/ansible/virt_net_module.html
+#
+- name: Check if libvirt networks are ready
+  command: "virsh net-info {{ _network.name }}"
+  ignore_errors: true
+  register: find_libvirt_network
+
+- name: Install libvirt netowrk XML file
+  template:
+    src: libvirt-network.xml.j2
+    dest: "/etc/libvirt/qemu/networks/{{ _network.name }}.xml"
+    backup: yes
+  when:
+    - find_libvirt_network|failed
+    - _network.create
+
+- name: Define libvirt netwrok from XML file installed before
+  command: "virsh net-define /etc/libvirt/qemu/networks/{{ _network.name }}.xml"
+  when:
+    - find_libvirt_network|failed
+    - _network.create
+
+# vim:sw=2:ts=2:et:

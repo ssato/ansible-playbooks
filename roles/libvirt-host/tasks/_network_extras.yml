@@ -1,0 +1,15 @@
+---
+
+- name: Configure DNS resolv for NetworkManager
+  lineinfile:
+    dest: "/etc/NetworkManager/dnsmasq.d/libvirt_dnsmasq_{{ _network.name }}.conf"
+    state: present
+    create: true
+    regexp: "^server.*"
+    line: "server=/{{ _network.domain }}/{{ _network.gw_ip }}"
+  when:
+    - "{{ _network.hosts is defined and _network.hosts and
+          _network.domain is defined and _network.domain and
+          _network.gw_ip is defined and _network.gw_ip }}"
+
+# vim:sw=2:ts=2:et:
