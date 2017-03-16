@@ -1,0 +1,30 @@
+---
+- name: Check if the source iso existss
+  stat:
+    path: "{{ _repo.source }}"
+  when:
+    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+
+- name: Ensure mount point for the source iso exists
+  file:
+    path: "{{ topdir }}/{{ _repo.name }}"
+    state: directory
+    mode: 0755
+  when:
+    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+
+- name: Setup mount for the source iso
+  lineinfile:
+    dest: /etc/fstab
+    state: present
+    regexp: "^{{ _repo.source }}"
+    line: "{{ _repo.source }} {{ topdir}}/{{ _repo.name }} none defaults,ro,loop 0 0"
+  when:
+    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+
+- name: Mount the source iso
+  command: "mount {{ _repo.source }}"
+  when:
+    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+
+# vim:sw=2:ts=2:et:

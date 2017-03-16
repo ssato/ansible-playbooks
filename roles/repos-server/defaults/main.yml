@@ -1,0 +1,12 @@
+---
+repos:
+  - name: rhel-7-server-rpms
+    type: iso
+    source: /var/lib/libvirt/images/rhel-server-7.2-x86_64-dvd.iso
+
+  - name: rhel-7-server-extras-rpms
+    type: reposync
+
+topdir: /var/www/html/pub/
+
+# vim:sw=2:ts=2:et:
