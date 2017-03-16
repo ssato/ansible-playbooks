@@ -18,10 +18,10 @@ libvirt_networks:
 #    hosts:
 #      - ip: &guest_1_ip 192.168.125.101
 #        hostname: &guest_1_hostname web01
-#        mac: &guest_mac_1 "52:54:00:12:51:01"
+#        mac: &guest_1_mac "52:54:00:12:51:01"
 #      - ip: &guest_2_ip 192.168.125.102
 #        hostname: &guest_2_hostname web02
-#        mac: &guest_mac_2 "52:54:00:12:51:02"
+#        mac: &guest_2_mac "52:54:00:12:51:02"
 
 libvirt_guests:
 
@@ -30,7 +30,15 @@ libvirt_guests:
 #    create: true
 #
 #    hostname: *guest_1_hostname
-#    ip_0: *guest_1_ip
+#    mac_0: *guest_1_mac
+#    libvirt_network: *net_1_name
+#    disk_0: 20  # [GB]
+#    disk_0_bus: scsi  # virtio-scsi
+#
+#    virtinst_wait: 10
+#    virtinst_ram: 1024
+#    virtinst_vcpus: 1
+#    virtinst_os_variant: rhel7
 #
 #    install_type: kickstart
 #    install_script: rhel-7-web-ks.cfg
