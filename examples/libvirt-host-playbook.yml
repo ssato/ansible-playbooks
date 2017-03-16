@@ -2,10 +2,6 @@
 - name: Setup Libvirt Hosts
   hosts: libvirt-hosts
   remote_user: root
-  vars:
-    # TODO: Is this stable enough?
-    cpu_vendor: "{{ ansible_processor[0] | regex_replace('(Genuine|Authentic)', '') | lower }}"
-
   roles:
     - libvirt-host
 
