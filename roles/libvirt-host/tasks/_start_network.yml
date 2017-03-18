@@ -6,10 +6,9 @@
 
 - name: Start libvirt netwrok
   command: "virsh net-start {{ _network.name }}"
-  ignore_errors: true  # Currently, defined but not started networks are not skipped.
   when:
-    - _network.start is defined
-    - _network.start
+    - _network.state is defined
+    - _network.state == 'started'
     - check_if_libvirt_network_is_active|failed
 
 - name: Check if libvirt networks are marked as auto started
