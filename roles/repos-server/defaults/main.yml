@@ -1,12 +1,24 @@
 ---
-repos:
-  - name: rhel-7-server-rpms
-    type: iso
-    source: /var/lib/libvirt/images/rhel-server-7.2-x86_64-dvd.iso
+repo_server: ansible.example.com
 
-  - name: rhel-7-server-extras-rpms
+httpd:
+  packages:
+    - httpd # httpd or nginx
+    - yum-utils
+
+  service: http # httpd or nginx
+  www_root: /var/www/html
+  repos_subdir: pub
+
+repos:
+  - id: rhel-7.3-server-rpms
+    type: iso
+    src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+
+  - id: rhel-7-server-rpms
     type: reposync
 
-topdir: /var/www/html/pub/
+  - id: rhel-7-server-extras-rpms
+    type: reposync
 
 # vim:sw=2:ts=2:et:
