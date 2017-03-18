@@ -1,4 +1,7 @@
 ---
+# for debug:
+# - debug: var=_network
+
 # .. note::
 #    virt_net is still in preview state so that I implement this by myself.
 #    :seealso: http://docs.ansible.com/ansible/virt_net_module.html
