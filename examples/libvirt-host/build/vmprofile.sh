@@ -12,4 +12,11 @@ extra_args="inst.headless inst.text inst.ks=file:/${kscfg} biosdevname=0 net.ifn
 
 scp_iso=${SCP_ISO:-no}  # or 'yes'
 
+if test ${connect:?} = "qemu:///system"; then  # It's local.
+    remote_host=
+else
+    remote_host=${connect##*\/\/}
+    remote_host=${remote_host%/*}
+fi
+
 # vim:sw=4:ts=4:et:
