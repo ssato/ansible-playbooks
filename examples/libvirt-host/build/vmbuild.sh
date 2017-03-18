@@ -10,10 +10,19 @@ kscfg=${ks_path##*/}
 source ${0%/*}/vmprofile.sh
 
 # for dhcp and dns:
-sudo grep "host mac=.${mac_addr}." /etc/libvirt/qemu/networks/${network}.xml || \
-sudo virsh net-update default add ip-dhcp-host --live --config \
---xml "<host mac='${mac_addr}' name='${hostname}' ip='${ip_addr}' />"
+if test ${connect:?} = "qemu:///system"; then  # It's local.
+    sudo grep "host mac=.${mac_addr}." /etc/libvirt/qemu/networks/${network}.xml || \
+    sudo virsh net-update default add ip-dhcp-host --live --config \
+        --xml "<host mac='${mac_addr}' name='${hostname}' ip='${ip_addr}' />"
+else
+    ssh_to=${connect##*\/\/}
+    ssh_to=${ssh_to%/*}
+    ssh ${ssh_to:?} "grep 'host mac=.${mac_addr}.' /etc/libvirt/qemu/networks/${network}.xml || \
+    virsh net-update default add ip-dhcp-host --live --config \
+        --xml \"<host mac='${mac_addr}' name='${hostname}' ip='${ip_addr}' />\""
+fi
 
+sudo virsh --connect=${connect:?} dominfo ${hostname:?} || \
 sudo \
 virt-install \
 --check-cpu --hvm --accelerate --noautoconsole \
@@ -28,7 +37,7 @@ virt-install \
 --os-type=linux \
 --os-variant=${os_variant} \
 --controller=scsi,model=virtio-scsi \
---disk pool=default,format=qcow2,cache=none,size=10,bus=scsi \
+--disk pool=default,format=qcow2,cache=none,size=${disksize:?},bus=scsi \
 --network network=${network},model=virtio,mac=${mac_addr:?} \
 --location=${iso_img} --initrd-inject=${ks_path} \
 --extra-args="${extra_args}"
