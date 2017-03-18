@@ -4,3 +4,4 @@ baseurl=http://{{ repo_server }}/pub/{{ _repo.id }}
 #metadata_expire=1h
 enabled=1
 gpgcheck={{ _repo.gpgcheck|default('1') }}
+skip_if_unavailable=True
