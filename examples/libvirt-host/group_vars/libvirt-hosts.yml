@@ -7,6 +7,7 @@ libvirt_networks:
   - name: &net_1_name lab
     create: true
     state: started
+    autostart: true
 
     bridge: virbr10
     domain: example.com
