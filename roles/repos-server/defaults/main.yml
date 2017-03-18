@@ -1,24 +1,25 @@
 ---
-repo_server: ansible.example.com
+repo_server:
+# repo_server: ansible.example.com
 
 httpd:
   packages:
     - httpd # httpd or nginx
     - yum-utils
 
-  service: http # httpd or nginx
+  service: httpd # httpd or nginx
   www_root: /var/www/html
   repos_subdir: pub
 
 repos:
-  - id: rhel-7.3-server-rpms
-    type: iso
-    src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
-
-  - id: rhel-7-server-rpms
-    type: reposync
-
-  - id: rhel-7-server-extras-rpms
-    type: reposync
+#  - id: rhel-7.3-server-rpms
+#    type: iso
+#    src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+#
+#  - id: rhel-7-server-rpms
+#    type: reposync
+#
+#  - id: rhel-7-server-extras-rpms
+#    type: reposync
 
 # vim:sw=2:ts=2:et:
