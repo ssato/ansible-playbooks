@@ -5,7 +5,7 @@
   <forward/>
   <domain name='{{ _network.domain }}' localOnly='yes'/>
   <dns>
-    <host ip='{{ _network.gw_ip }}'><hostname>{{ _network.gw_hostname }}</hostname></host>
+    <host ip='{{ _network.gw_ip }}'><hostname>{{ _network.gw_hostname }}.{{ _network.domain }}</hostname></host>
   </dns>
   <ip address='{{ _network.gw_ip }}' netmask='{{ _network.netmask|default("255.255.255.0") }}'>
     <dhcp>
