@@ -3,7 +3,6 @@
   package:
     name: "{{ item }}"
     state: installed
-  with_items:
-    - httpd
+  with_items: "{{ httpd.packages|default(['httpd']) }}"
 
 # vim:sw=2:ts=2:et:

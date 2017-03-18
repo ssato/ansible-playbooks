@@ -1,10 +1,8 @@
 ---
-- name: Ensure necessary servcies are running
+- name: Ensure httpd servcie is running
   service:
-    name: "{{ item }}"
+    name: "{{ httpd.service|default('httpd') }}"
     state: started
-  with_items:
-    - httpd
 
 - include: _setup_repo.yml
   with_items: "{{ repos }}"

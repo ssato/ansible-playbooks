@@ -1,30 +1,46 @@
 ---
 - name: Check if the source iso existss
   stat:
-    path: "{{ _repo.source }}"
+    path: "{{ _repo.src }}"
+  register: check_if_repo_src_exists
   when:
-    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+    - "{{ _repo.type is defined and _repo.type == 'iso' and
+          _repo.src is defined and _repo.src }}"
 
-- name: Ensure mount point for the source iso exists
+- name: Ensure repo's dir exists for the repo
   file:
-    path: "{{ topdir }}/{{ _repo.name }}"
+    path: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}"
     state: directory
     mode: 0755
   when:
-    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+    - "{{ _repo.id is defined and _repo.id }}"
 
-- name: Setup mount for the source iso
+- name: Setup mount for the iso image for the repo
   lineinfile:
     dest: /etc/fstab
     state: present
-    regexp: "^{{ _repo.source }}"
-    line: "{{ _repo.source }} {{ topdir}}/{{ _repo.name }} none defaults,ro,loop 0 0"
+    regexp: "^{{ _repo.src }}"
+    line: "{{ _repo.src }} {{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }} none defaults,ro,loop 0 0"
   when:
-    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+    - check_if_repo_src_exists|succeeded
+    - "{{ _repo.id is defined and _repo.id }}"
 
-- name: Mount the source iso
-  command: "mount {{ _repo.source }}"
+- name: Mount the iso image for the repo
+  command: "mount {{ _repo.src }}"
   when:
-    - "{{ _repo.type is defined and _repo.type == 'iso' and _repo.source is define }}"
+    - check_if_repo_src_exists|succeeded
+
+- name: Synchronize the yum repo
+  command: "reposync --newest-only --download_path={{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }} --repoid={{ _repo.id }}"
+  when:
+    - "{{ _repo.id is defined and _repo.id and
+          _repo.type is defined and _repo.type == 'reposync' }}"
+
+- name: Setup yum repo file for the repo
+  template:
+    src: yum.repo.j2
+    dest: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}.repo"
+  when:
+    - "{{ _repo.id is defined and _repo.id }}"
 
 # vim:sw=2:ts=2:et:
