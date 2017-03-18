@@ -25,7 +25,7 @@
 # @see https://goo.gl/UjGtfw
 - name: Configure local DNS for NetworkManager
   copy:
-    dest: /etc/NetworkManager/conf.d/local_dns.conf
+    dest: /etc/NetworkManager/conf.d/90-local_dns.conf
     content: |
       [main]
       dns=dnsmasq
