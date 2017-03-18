@@ -1,6 +1,32 @@
 ---
+# DEBUG:
+#- debug: var=_network
 
-- name: Configure DNS resolv for NetworkManager
+# a. It's very strange but the later one looks failed and interpreted as False:
+#
+#    _network.hosts is defined   -> True if it's defined.
+#    _network.hosts is defined and _network.hosts  (.hosts = [...]) -> False
+#
+# b. It seems that "{{ ... }}" (quotation) is must if '|' appears more than once.
+# c. It seems that
+#
+#       "{{ _network.hosts|selectattr('...')|selectattr('...') }}"
+#
+#    does not work but
+#
+#       "{{ _network.hosts|selectattr('...')|selectattr('...')|list }}"
+#
+#    works.
+#
+#- debug: var=item
+#  with_items: "{{ _network.hosts|selectattr('ip')|selectattr('hostname')|list }}"
+#  when:
+#    - _network.hosts is defined
+#    - _network.hosts
+#    - _network.hosts|length > 0
+#
+
+- name: Configure NetworkManager to resolv domain names in this netwrok
   lineinfile:
     dest: "/etc/NetworkManager/dnsmasq.d/libvirt_dnsmasq_{{ _network.name }}.conf"
     state: present
@@ -8,8 +34,42 @@
     regexp: "^server.*"
     line: "server=/{{ _network.domain }}/{{ _network.gw_ip }}"
   when:
-    - "{{ _network.hosts is defined and _network.hosts and
-          _network.domain is defined and _network.domain and
-          _network.gw_ip is defined and _network.gw_ip }}"
+    - _network.domain is defined
+    - _network.domain
+    - _network.gw_ip is defined
+    - _network.gw_ip
+    - _network.hosts is defined
+    - _network.hosts
+
+- name: Add host's DNS entries into the Libvirt Network XML of this network
+  shell: "grep -qE \"<host ip=.{{ item.ip }}.>\" /etc/libvirt/qemu/networks/{{ _network.name }}.xml
+       || virsh net-update {{ _network.name }} add dns-host --live --config
+            --xml \"<host ip='{{ item.ip }}'>
+                      <hostname>{{ item.hostname }}.{{ _network.domain }}</hostname>
+                    </host>\""
+  with_items: "{{ _network.hosts|selectattr('ip')|selectattr('hostname')|list }}"
+  when:
+    - _network.domain is defined
+    - _network.domain
+    - _network.hosts is defined
+    - _network.hosts
+    - _network.hosts|selectattr('hostname')
+    - _network.hosts|selectattr('ip')
+
+- name: Add host's DHCP entries into the Libvirt Network XML of this network
+  shell: "grep -qE \"<host mac=.{{ item.mac }}.\" /etc/libvirt/qemu/networks/{{ _network.name }}.xml
+       || virsh net-update {{ _network.name }} add ip-dhcp-host --live --config
+            --xml \"<host mac='{{ item.mac }}'
+                      name='{{ item.hostname }}.{{ _network.domain }}'
+                      ip='{{ item.ip }}' />\""
+  with_items: "{{ _network.hosts|selectattr('mac')|selectattr('ip')|selectattr('hostname')|list }}"
+  when:
+    - _network.domain is defined
+    - _network.domain
+    - _network.hosts is defined
+    - _network.hosts
+    - _network.hosts|selectattr('mac')
+    - _network.hosts|selectattr('hostname')
+    - _network.hosts|selectattr('ip')
 
 # vim:sw=2:ts=2:et:
