@@ -1,46 +1,67 @@
 ---
+- debug: var=_repo
+
 - name: Check if the source iso existss
-  stat:
-    path: "{{ _repo.src }}"
+  command: "test -f {{ _repo.src }}"
   register: check_if_repo_src_exists
   when:
-    - "{{ _repo.type is defined and _repo.type == 'iso' and
-          _repo.src is defined and _repo.src }}"
+    - _repo.type is defined
+    - "{{ _repo.type == 'iso' }}"
+    - _repo.src is defined
+    - _repo.src
 
 - name: Ensure repo's dir exists for the repo
   file:
     path: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}"
     state: directory
-    mode: 0755
+    # mode: 0755  # It looks failed if it's already exists and mounted isos under it.
   when:
-    - "{{ _repo.id is defined and _repo.id }}"
+    - _repo.id is defined
+    - _repo.id
 
 - name: Setup mount for the iso image for the repo
   lineinfile:
     dest: /etc/fstab
     state: present
     regexp: "^{{ _repo.src }}"
-    line: "{{ _repo.src }} {{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }} none defaults,ro,loop 0 0"
+    line: "{{ _repo.src }} {{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }} iso9660 ro,loop 0 0"
   when:
     - check_if_repo_src_exists|succeeded
-    - "{{ _repo.id is defined and _repo.id }}"
+    - _repo.type is defined
+    - "{{ _repo.type == 'iso' }}"
+    - _repo.src is defined
+    - _repo.src
+    - _repo.id is defined
+    - _repo.id
 
 - name: Mount the iso image for the repo
-  command: "mount {{ _repo.src }}"
+  shell: "mount | grep -q {{ _repo.src }} || mount {{ _repo.src }}"
   when:
     - check_if_repo_src_exists|succeeded
+    - _repo.type is defined
+    - "{{ _repo.type == 'iso' }}"
+    - _repo.src is defined
+    - _repo.src
 
 - name: Synchronize the yum repo
-  command: "reposync --newest-only --download_path={{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }} --repoid={{ _repo.id }}"
+  command: "reposync --newest-only
+              --download_path={{ httpd.www_root }}/{{ httpd.repos_subdir }}/
+              --repoid={{ _repo.id }}"
   when:
-    - "{{ _repo.id is defined and _repo.id and
-          _repo.type is defined and _repo.type == 'reposync' }}"
+    - _repo.type is defined
+    - "{{ _repo.type == 'reposync' }}"
+    - _repo.id is defined
+    - _repo.id
 
 - name: Setup yum repo file for the repo
   template:
     src: yum.repo.j2
-    dest: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}.repo"
+    dest: "{{ item }}"
+  with_items:
+    - "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}.repo"
+    - "/etc/yum.repos.d/{{ _repo.id }}.repo"
   when:
-    - "{{ _repo.id is defined and _repo.id }}"
+    - _repo.id is defined
+    - _repo.id
 
 # vim:sw=2:ts=2:et:
