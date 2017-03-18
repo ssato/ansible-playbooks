@@ -1,0 +1,8 @@
+---
+- name: Setup Yum repos
+  hosts: libvirt-hosts
+  remote_user: root
+  roles:
+    - repos-server
+
+# vim:sw=2:ts=2:et:
