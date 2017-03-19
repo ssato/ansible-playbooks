@@ -1,0 +1,8 @@
+AC_INIT([@PACKAGE@],[@VERSION@])
+AM_INIT_AUTOMAKE([no-dist-gzip dist-xz foreign subdir-objects tar-pax])
+AC_CONFIG_FILES([
+Makefile
+package.spec
+])
+
+AC_OUTPUT

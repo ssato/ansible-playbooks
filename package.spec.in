@@ -1,0 +1,38 @@
+%global ansible_rolesdir %{_sysconfdir}/ansible/roles
+
+Name:           @PACKAGE@
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        Ansible role data by ssato
+Group:          Development/Tools
+License:        MIT
+URL:            https://github.com/ssato/ansible-playbooks
+Source0:        %{name}-%{version}.tar.xz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildArch:      noarch
+#BuildRequires:  python-docutils-exts-bootstrap
+Requires:       ansible
+
+%description
+Ansible roles' data available from my (ssato's) github repos.
+
+%prep
+%setup -q
+
+%build
+%configure --quiet --enable-silent-rules
+make %{?_smp_mflags} V=0
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%files
+%doc examples
+%defattr(-,root,root,-)
+%{ansible_rolesdir}/*/*.*
+%{ansible_rolesdir}/*/*/*.*
+
+%changelog
+* Sun Mar 19 2017 Satoru SATOH <ssato@redhat.com> - 0.1.0-1
+- Initial packaging
