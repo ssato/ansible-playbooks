@@ -5,6 +5,7 @@ repos:
   - id: rhel-7.3-server-rpms
     type: iso
     src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+    iso_path: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
 
 #  - id: rhel-7-server-rpms
 #    type: reposync
