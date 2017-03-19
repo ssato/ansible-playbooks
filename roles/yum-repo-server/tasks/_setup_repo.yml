@@ -68,11 +68,13 @@
 
 - name: Setup yum repo file for the repo
   template:
-    src: yum.repo.j2
-    dest: "{{ item }}"
+    src: "{{ item.template }}"
+    dest: "{{ item.dest }}"
   with_items:
-    - "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}.repo"
-    - "/etc/yum.repos.d/{{ _repo.id }}.repo"
+    - template: yum.repo.j2
+      dest: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}.repo"
+    - template: yum.local.repo.j2
+      dest: "/etc/yum.repos.d/{{ _repo.id }}.repo"
   when:
     - _repo.id is defined
     - _repo.id
