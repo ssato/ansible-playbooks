@@ -4,17 +4,23 @@ repo_server:
 
 httpd:
   packages:
-    - httpd # httpd or nginx
+    # httpd or nginx
+    - httpd
     - yum-utils
 
-  service: httpd # httpd or nginx
+  # httpd or nginx
+  service: httpd
   www_root: /var/www/html
   repos_subdir: pub
 
 repos:
+#  # id: Repo's ID, type: iso (image) or reposync, src: Local iso image path
+#  # (type=iso only), iso_path: Remote iso image path (type=iso only)
+#
 #  - id: rhel-7.3-server-rpms
 #    type: iso
 #    src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+#    iso_path: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
 #
 #  - id: rhel-7-server-rpms
 #    type: reposync
