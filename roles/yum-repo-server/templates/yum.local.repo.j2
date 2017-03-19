@@ -1,0 +1,7 @@
+[{{ _repo.id }}]
+name={{ _repo.name is defined and _repo.name or _repo.id }}
+baseurl=file://{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}
+#metadata_expire=1h
+enabled=1
+gpgcheck={{ _repo.gpgcheck|default('1') }}
+skip_if_unavailable=True
