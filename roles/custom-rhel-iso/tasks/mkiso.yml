@@ -12,11 +12,11 @@
 
 - name: Copy original contents of the iso image
   synchronize:
-    src: "{{ iso.mnt }}"/
-    dest: "{{ workdir }}"/
+    src: "{{ iso.mnt }}/"
+    dest: "{{ workdir }}/"
 
 - name: Umount the iso image
-  command: "unmount {{ iso.mnt }}"
+  command: "umount {{ iso.mnt }}"
   become: true
   become_method: sudo
 
@@ -52,7 +52,7 @@
     replace: default kickstart
 
 - name: Create custom kickstartable iso image
-  command: "mkisofs -r -T -J -V \"{{ iso.label }}\" -input-charset UTF-8
+  command: "mkisofs -r -T -J -V \"{{ iso.label }}\" -input-charset UTF-8 -quiet
                     -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot
                     -boot-load-size 4 -boot-info-table -o {{ iso.output }}"
 
