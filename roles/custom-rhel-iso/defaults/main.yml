@@ -1,0 +1,52 @@
+---
+
+workdir: custom_rhel_iso
+
+iso:
+  path: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+  label: "RHEL 7 Custom Build"
+  mnt: /mnt
+  output: rhel-server-7.3-custom-x86_64-dvd.iso
+
+kickstart:
+  version: RHEL7
+  lang: en_US.UTF-8
+  timezone: Asia/Tokyo
+  # It must be changed!
+  rootpw: password
+  services:
+    enabled:
+      - NetworkManager
+      - sshd
+  repos:
+    #- name: rhel-7-server-rpms
+    #  baseurl: http://yum-repo-server/pub/rhel-7-server-rpms
+    #  options: --cost=100
+    #- name: epel-7-server-rpms
+    #  mirrorlist: "https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch"
+    #  options: --install
+
+  packages:
+    - @core
+    - @x11
+    - @gnome-desktop
+    - @guest-desktop-agents
+    - @guest-agents
+    - bash-completion
+    - bind-utils
+    - chrony
+    - elinks
+    - lftp
+    - make
+    - nfs-utils
+    - rsync
+    - screen
+    - sos
+    - strace
+    - tcpdump
+    - tmux
+    - vim-enhanced
+    - nc
+    - yum-utils
+
+# vim:sw=2:ts=2:et:

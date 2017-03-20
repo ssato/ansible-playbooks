@@ -1,0 +1,8 @@
+---
+- name: Create custom RHEL iso image
+  hosts: localhost
+  become: false
+  roles:
+    - custom-rhel-iso
+
+# vim:sw=2:ts=2:et:

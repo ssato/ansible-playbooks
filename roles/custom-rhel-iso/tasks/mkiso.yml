@@ -1,0 +1,59 @@
+---
+
+- name: Setup working dir
+  file:
+    path: "{{ workdir }}"
+    state: directory
+
+- name: Mount the iso image
+  command: "mount -o ro,loop {{ iso.path }} {{ iso.mnt }}"
+  become: true
+  become_method: sudo
+
+- name: Copy original contents of the iso image
+  synchronize:
+    src: "{{ iso.mnt }}"/
+    dest: "{{ workdir }}"/
+
+- name: Umount the iso image
+  command: "unmount {{ iso.mnt }}"
+  become: true
+  become_method: sudo
+
+- name: Make isolinux.bin writable
+  file:
+    path: "{{ workdir }}/isolinux/{{ item }}"
+    mode: a+rw
+  with_items:
+    - isolinux.bin
+    - isolinux.cfg
+
+- name: Inject kickstart file
+  template:
+    src: ks.cfg.j2
+    dest: "{{ workdir }}/ks.cfg"
+    validate: "ksvalidator --version {{ kickstart.version }} %s"
+
+- name: Add kickstart entry to the boot menu
+  blockinfile:
+    path: "{{ workdir }}/isolinux/isolinux.cfg"
+    block: |
+      label kickstart
+        menu label ^Kickstart Install Red Hat Enterprise Linux
+        kernel vmlinuz
+        append initrd=initrd.img inst.ks=cdrom:/ks.cfg inst.text inst.loglevel=debug inst.text inst.stage2=hd:LABEL=RHEL-7.3\x20Server.x86_64 quiet
+
+    insertbefore: "^label linux"
+
+- name: Set kickstart install as default menu choise
+  replace:
+    path: "{{ workdir }}/isolinux/isolinux.cfg"
+    regexp: "^default .*"
+    replace: default kickstart
+
+- name: Create custom kickstartable iso image
+  command: "mkisofs -r -T -J -V \"{{ iso.label }}\" -input-charset UTF-8
+                    -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot
+                    -boot-load-size 4 -boot-info-table -o {{ iso.output }}"
+
+# vim:sw=2:ts=2:et:
