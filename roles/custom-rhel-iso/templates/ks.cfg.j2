@@ -13,15 +13,15 @@ xconfig --startxonboot
 zerombr
 clearpart --all
 part / --size 1 --grow
-services {{ '--enabled=%s' % kickstart.services.enabled|join(',')
-            if kickstart.services.enabled is defined and kickstart.services.enabled -}}
-         {{ ' --disabled=%s' % kickstart.services.disabled|join(',')
-            if kickstart.services.disabled is defined and kickstart.services.disabled }}
+services {{ '--enabled=%s' % kickstart.services.enabled|join(',') if kickstart.services.enabled is defined and kickstart.services.enabled else '' }}{{ ' --disabled=%s' % kickstart.services.disabled|join(',') if kickstart.services.disabled is defined and kickstart.services.disabled else '' }}
 network --bootproto=dhcp --device=link --activate
 shutdown
 {%  if kickstart.repos is defined and kickstart.repos -%}
-{%-    for repo in kickstart.repos if repo.name and (repo.baseurl or repo.mirrorlist) -%}
-repo --name={{ repo.name }} {{ '--baseurl=%s' % repo.baseurl if repo.baseurl is defined and repo.baseurl }} {{ '--mirrorlist=%s' % repo.mirrorlist if repo.mirrorlist is defined and repo.mirrorlist }} {{ repo.options if repo.options is defined and repo.options }}
+{%-    for repo in kickstart.repos
+           if repo.name is defined and repo.name and
+            ((repo.baseurl is defined and repo.baseurl) or
+             (repo.mirrorlist is defined and repo.mirrorlist)) -%}
+repo --name={{ repo.name }} {{ '--baseurl=%s' % repo.baseurl if repo.baseurl is defined and repo.baseurl else '' }} {{ '--mirrorlist=%s' % repo.mirrorlist if repo.mirrorlist is defined and repo.mirrorlist else '' }} {{ repo.options if repo.options is defined and repo.options else '' }}
 {%     endfor -%}
 {%- endif %}
 
