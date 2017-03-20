@@ -14,39 +14,39 @@ zerombr
 clearpart --all
 part / --size 1 --grow
 services {{ '--enabled=%s' % kickstart.services.enabled|join(',') if kickstart.services.enabled is defined and kickstart.services.enabled else '' }}{{ ' --disabled=%s' % kickstart.services.disabled|join(',') if kickstart.services.disabled is defined and kickstart.services.disabled else '' }}
-network --bootproto=dhcp --device=link --activate
-shutdown
 {%  if kickstart.repos is defined and kickstart.repos -%}
-{%-    for repo in kickstart.repos
-           if repo.name is defined and repo.name and
-            ((repo.baseurl is defined and repo.baseurl) or
-             (repo.mirrorlist is defined and repo.mirrorlist)) -%}
-repo --name={{ repo.name }} {{ '--baseurl=%s' % repo.baseurl if repo.baseurl is defined and repo.baseurl else '' }} {{ '--mirrorlist=%s' % repo.mirrorlist if repo.mirrorlist is defined and repo.mirrorlist else '' }} {{ repo.options if repo.options is defined and repo.options else '' }}
+{%-    for __repo in kickstart.repos
+           if __repo.name is defined and __repo.name and
+            ((__repo.baseurl is defined and __repo.baseurl) or
+             (__repo.mirrorlist is defined and __repo.mirrorlist)) -%}
+repo --name={{ __repo.name }} {{ '--baseurl=%s' % __repo.baseurl if __repo.baseurl is defined and __repo.baseurl else '' }} {{ '--mirrorlist=%s' % __repo.mirrorlist if __repo.mirrorlist is defined and __repo.mirrorlist else '' }} {{ __repo.options if __repo.options is defined and __repo.options else '' }}
 {%     endfor -%}
 {%- endif %}
 {%  if kickstart.users is defined and kickstart.users -%}
-{%      for user in kickstart.users|selectattr('name') -%}
-user --name={{ user.name }}
-{{-        " --gecos=\"%s\"" % user.gecos if user.gecos -}}
-{{-        " --groups=%s" % user.groups|join(',') if user.groups -}}
-{{-        " --homedir=%s" % user.homedir if user.homedir -}}
-{{-        " --password=%s" % user.password if user.password -}}
-{{-        " --iscrypted" if user.iscrypted -}}
-{{-        " --shell=%s" % user.shell if user.shell -}}
-{{-        " --uid=%s" % user.uid if user.uid -}}
-{{-        " --gid=%s" % user.gid if user.gid -}}
-{{-        " --lock" if user.lock }}
-{%      endfor %}
-{%- endif %}
+{%      for __user in kickstart.users|selectattr('name') -%}
+user --name={{ __user.name }}
+{{-        " --gecos=\"%s\"" % __user.gecos if __user.gecos -}}
+{{-        " --groups=%s" % __user.groups|join(',') if __user.groups -}}
+{{-        " --homedir=%s" % __user.homedir if __user.homedir -}}
+{{-        " --password=%s" % __user.password if __user.password -}}
+{{-        " --iscrypted" if __user.iscrypted -}}
+{{-        " --shell=%s" % __user.shell if __user.shell -}}
+{{-        " --uid=%s" % __user.uid if __user.uid -}}
+{{-        " --gid=%s" % __user.gid if __user.gid -}}
+{{-        " --lock" if __user.lock }}
 {%      endfor -%}
 {%- endif %}
+network --bootproto=dhcp --device=link --activate
+shutdown
 
 %packages --ignoremissing
-{% for pkg in kickstart.packages -%}
-{{     pkg }}
+{% for _pkg in kickstart.packages -%}
+{{     _pkg }}
 {% else %}
 @core
 @base
+@x11
+@gnome-desktop
 {% endfor %}
 %end
 
