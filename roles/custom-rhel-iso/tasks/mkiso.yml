@@ -2,41 +2,49 @@
 
 - name: Setup working dir
   file:
-    path: "{{ workdir }}"
+    path: "{{ iso.workdir }}"
     state: directory
 
 - name: Mount the iso image
   command: "mount -o ro,loop {{ iso.path }} {{ iso.mnt }}"
   become: true
   become_method: sudo
+  changed_when: false
 
 - name: Copy original contents of the iso image
   synchronize:
     src: "{{ iso.mnt }}/"
-    dest: "{{ workdir }}/"
+    dest: "{{ iso.workdir }}/"
+    rsync_opts: "--quiet"
 
 - name: Umount the iso image
   command: "umount {{ iso.mnt }}"
   become: true
   become_method: sudo
+  changed_when: false
 
-- name: Make isolinux.bin writable
+- name: Make the content of iso image writable
   file:
-    path: "{{ workdir }}/isolinux/{{ item }}"
+    path: "{{ iso.workdir }}/{{ item }}"
     mode: a+rw
   with_items:
-    - isolinux.bin
-    - isolinux.cfg
+    - isolinux/isolinux.bin
+    - isolinux/isolinux.cfg
+    - isolinux/
+  changed_when: false
 
 - name: Inject kickstart file
   template:
     src: ks.cfg.j2
-    dest: "{{ workdir }}/ks.cfg"
+    dest: "{{ iso.workdir }}/ks.cfg"
     validate: "ksvalidator --version {{ kickstart.version }} %s"
 
 - name: Add kickstart entry to the boot menu
   blockinfile:
-    path: "{{ workdir }}/isolinux/isolinux.cfg"
+    # ansible >= 2.3
+    #path: "{{ iso.workdir }}/isolinux/isolinux.cfg"
+    # ansible < 2.3
+    dest: "{{ iso.workdir }}/isolinux/isolinux.cfg"
     block: |
       label kickstart
         menu label ^Kickstart Install Red Hat Enterprise Linux
@@ -47,13 +55,16 @@
 
 - name: Set kickstart install as default menu choise
   replace:
-    path: "{{ workdir }}/isolinux/isolinux.cfg"
+    # ansible >= 2.3
+    #path: "{{ iso.workdir }}/isolinux/isolinux.cfg"
+    dest: "{{ iso.workdir }}/isolinux/isolinux.cfg"
     regexp: "^default .*"
     replace: default kickstart
 
 - name: Create custom kickstartable iso image
   command: "mkisofs -r -T -J -V \"{{ iso.label }}\" -input-charset UTF-8 -quiet
                     -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot
-                    -boot-load-size 4 -boot-info-table -o {{ iso.output }}"
+                    -boot-load-size 4 -boot-info-table -o {{ iso.output }} {{ iso.workdir }}"
+  changed_when: false
 
 # vim:sw=2:ts=2:et:
