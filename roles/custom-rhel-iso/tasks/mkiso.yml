@@ -23,6 +23,7 @@
   become_method: sudo
   changed_when: false
 
+# FIXME:
 - name: Make the content of iso image writable
   file:
     path: "{{ iso.workdir }}/{{ item }}"
@@ -31,6 +32,7 @@
     - isolinux/isolinux.bin
     - isolinux/isolinux.cfg
     - isolinux/
+    - ''
   changed_when: false
 
 - name: Inject kickstart file
