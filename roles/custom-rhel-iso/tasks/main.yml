@@ -1,2 +1,3 @@
 ---
 - include: mkiso.yml
+- include: write_to_disk.yml

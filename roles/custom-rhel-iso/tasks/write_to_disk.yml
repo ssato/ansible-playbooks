@@ -1,0 +1,10 @@
+---
+- name: Write the content of the custom kickstartable iso image to USB disk
+  command: "livecd-iso-to-disk --format --reset-mbr {{ iso.output }} {{ iso.disk_to_write_to }}"
+  become: true
+  changed_when: false
+  when:
+    - iso.disk_to_write_to is defined
+    - iso.disk_to_write_to
+
+# vim:sw=2:ts=2:et:
