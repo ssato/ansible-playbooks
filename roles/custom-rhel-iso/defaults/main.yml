@@ -27,11 +27,8 @@ kickstart:
     #  options: --install
 
   packages:
-    - @core
-    - @x11
-    - @gnome-desktop
-    - @guest-desktop-agents
-    - @guest-agents
+    - "@core"
+    - "@x11"
     - bash-completion
     - bind-utils
     - chrony
