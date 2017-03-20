@@ -1,12 +1,11 @@
 ---
 
-workdir: custom_rhel_iso
-
 iso:
   path: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
   label: "RHEL 7 Custom Build"
   mnt: /mnt
-  output: rhel-server-7.3-custom-x86_64-dvd.iso
+  output: rhel-server-7.3-x86_64-custom-dvd.iso
+  workdir: rhel-server-7.3-x86_64-custom-dvd
 
 kickstart:
   version: RHEL7
@@ -18,6 +17,7 @@ kickstart:
     enabled:
       - NetworkManager
       - sshd
+    disabled:
   repos:
     #- name: rhel-7-server-rpms
     #  baseurl: http://yum-repo-server/pub/rhel-7-server-rpms
