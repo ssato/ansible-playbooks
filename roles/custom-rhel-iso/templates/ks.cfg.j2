@@ -24,6 +24,22 @@ shutdown
 repo --name={{ repo.name }} {{ '--baseurl=%s' % repo.baseurl if repo.baseurl is defined and repo.baseurl else '' }} {{ '--mirrorlist=%s' % repo.mirrorlist if repo.mirrorlist is defined and repo.mirrorlist else '' }} {{ repo.options if repo.options is defined and repo.options else '' }}
 {%     endfor -%}
 {%- endif %}
+{%  if kickstart.users is defined and kickstart.users -%}
+{%      for user in kickstart.users|selectattr('name') -%}
+user --name={{ user.name }}
+{{-        " --gecos=\"%s\"" % user.gecos if user.gecos -}}
+{{-        " --groups=%s" % user.groups|join(',') if user.groups -}}
+{{-        " --homedir=%s" % user.homedir if user.homedir -}}
+{{-        " --password=%s" % user.password if user.password -}}
+{{-        " --iscrypted" if user.iscrypted -}}
+{{-        " --shell=%s" % user.shell if user.shell -}}
+{{-        " --uid=%s" % user.uid if user.uid -}}
+{{-        " --gid=%s" % user.gid if user.gid -}}
+{{-        " --lock" if user.lock }}
+{%      endfor %}
+{%- endif %}
+{%      endfor -%}
+{%- endif %}
 
 %packages --ignoremissing
 {% for pkg in kickstart.packages -%}
