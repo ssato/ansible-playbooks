@@ -6,6 +6,7 @@ iso:
   mnt: /mnt
   output: rhel-server-7.3-x86_64-custom-dvd.iso
   workdir: rhel-server-7.3-x86_64-custom-dvd
+  # disk_to_write_to: /dev/sdb
 
 kickstart:
   version: RHEL7
