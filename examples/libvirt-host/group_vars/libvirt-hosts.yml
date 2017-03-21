@@ -44,7 +44,7 @@ libvirt_guests:
     virtinst_net_interfaces:
       - network: lab
         model: virtio
-        mac: 52:54:00:12:51:01
+        mac: "52:54:00:12:51:01"
 
     virtinst_wait: 20
     virtinst_ram: 1024
