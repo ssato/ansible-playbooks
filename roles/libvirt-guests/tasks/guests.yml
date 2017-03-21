@@ -6,7 +6,7 @@
   with_items:
     - libvirtd
 
-- include: _create_guests.yml
+- include: _create_guest.yml
   with_items: "{{ libvirt_guests }}"
   loop_control:
     loop_var: _guest
