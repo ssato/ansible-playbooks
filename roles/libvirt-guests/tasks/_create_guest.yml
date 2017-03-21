@@ -6,6 +6,7 @@
   command: "virsh dominfo {{ _guest.name }}"
   ignore_errors: true
   register: find_libvirt_guest
+  changed_when: false
 
 - name: Ensure working dir to save stuff for this libvirt guest exists
   file:
@@ -34,6 +35,14 @@
   shell: "bash -x ./build.sh"
   args:
     chdir: "{{ libvirt_guests_build_dir }}/{{ _guest.name }}/"
+  changed_when: false
+  when:
+    - find_libvirt_guest|failed
+    - _guest.create
+    - _guest.auto_install_script is defined
+    - _guest.auto_install_script
+    - _guest.auto_install_script.src is defined
+    - _guest.auto_install_script.src
 
 # .. note::
 #    virt is still in preview state.
@@ -44,8 +53,6 @@
     name: "{{ _guest.name }}"
     state: "{{ _guest.state }}"
   when:
-    - find_libvirt_guest|failed
-    - _guest.create
     - _guest.state is defined
     - "{{ _guest.state in ('running', 'shutdown', 'destroyed', 'paused') }}"
 
