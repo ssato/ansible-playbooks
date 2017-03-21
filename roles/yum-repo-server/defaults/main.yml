@@ -21,11 +21,14 @@ repos:
 #    type: iso
 #    src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
 #    iso_path: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+#    gpgkey: /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 #
 #  - id: rhel-7-server-rpms
 #    type: reposync
+#    gpgkey: /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 #
 #  - id: rhel-7-server-extras-rpms
 #    type: reposync
+#    gpgkey: /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 # vim:sw=2:ts=2:et:

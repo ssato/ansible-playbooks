@@ -3,5 +3,10 @@ name={{ _repo.name is defined and _repo.name or _repo.id }}
 baseurl=http://{{ repo_server }}/{{ httpd.repos_subdir }}/{{ _repo.id }}
 #metadata_expire=1h
 enabled=1
-gpgcheck={{ _repo.gpgcheck|default('1') }}
 skip_if_unavailable=True
+{% if _repo.gpgkey is defined and _repo.gpgkey -%}
+gpgcheck=1
+gpgkey=file://{{ _repo.gpgkey }}
+{%- else %}
+gpgcheck=0
+{%- endif %}
