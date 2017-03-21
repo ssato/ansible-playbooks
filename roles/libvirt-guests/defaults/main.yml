@@ -1,0 +1,39 @@
+---
+libvirt_guests_build_dir: /var/lib/libvirt/virtinst
+libvirt_guests:
+
+#  - name: web01
+#    description: Web server 01
+#    create: true
+#
+#    auto_install_script:
+#     src: rhel-7-web-ks.cfg.j2
+#     dest: ks.cfg
+#
+#    hostname: web01.example.com
+#
+#    virtinst_disks:
+#     # choices, bus: scsi (virtio-scsi), virtio, ..., size: int [GB]
+#     - bus: scsi
+#       size: 20
+#
+#    # @see libvirt_networks (libvirt-host role)
+#    virtinst_net_interfaces:
+#     - network: lab
+#       model: virtio
+#       mac: 52:54:00:12:51:01
+#
+#    virtinst_wait: 20
+#    virtinst_ram: 1024
+#    virtinst_cpu: host
+#    virtinst_vcpus: 1
+#    virtinst_os_type: linux
+#    virtinst_os_variant: rhel7
+#    virtinst_location: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+#    virtinst_options:
+#     - "--controller=scsi,model=virtio-scsi"
+#     - "--initrd-inject=ks.cfg"
+#     - "--extra-args='inst.loglevel=debug inst.text inst.ks=file:/ks.cfg net.ifnames=0'"
+#
+
+# vim:sw=2:ts=2:et:
