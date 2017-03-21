@@ -1,2 +1,3 @@
-search {{ libvirt_networks|selectattr('domain')|join(' ') }}
+search{% for __net in libvirt_networks if __net.domain is defined and __net.domain %}{{ ' %s' % __net.domain }}{% endfor %}
+
 nameserver 127.0.0.1
