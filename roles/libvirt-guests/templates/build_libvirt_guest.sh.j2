@@ -1,0 +1,32 @@
+#! /bin/bash
+#
+# This is just an example script for Fedora/CentOS/RHEL guests.
+#
+# :seealso: virt-install(1)
+#
+set -ex
+name={{ _guest.name }}
+
+disks="{% for __disk in _guest.virtinst_disks -%}
+{{- ' --disk pool=default,format=qcow2,cache=none,size=%s,bus=%s' % (__disk.size|default('10'), __disk.bus|default('virtio')) }} {% endfor %}"
+networks="{% for __nic in _guest.virtinst_net_interfaces -%}
+{{- ' --network network=%s,model=%s,mac=%s' % (__nic.network|default('default'), __nic.model|default('virtio'), __nic.mac|default('RANDOM')) }} {% endfor %}"
+
+virt-install \
+--name=${name:?} \
+--check-cpu --hvm --accelerate --noautoconsole \
+--connect={{ _guest.virtinst_connect|default('qemu:///system') }} \
+--arch=x86_24 \
+--wait={{ _guest.virtinst_wait|default('10') }} \
+--ram={{ _guest.virtinst_ram|default('1024') }} \
+--cpu={{ _guest.virtinst_cpu|default('host-model-only') }} \
+--vcpus={{ _guest.virtinst_vcpus|default('1') }} \
+--graphics={{ _guest.virtinst_graphics|default('vnc') }},keymap=us \
+--os-type={{ _guest.virtinst_os_type|default('linux') }} \
+--os-variant={{ _guest.virtinst_os_variant|default('rhel7') }} \
+--location={{ _guest.virtinst_location }} \
+${disks:?} \
+${networks:?} \
+{{ _guest.virtinst_options|join(' ') if _guest.virtinst_options is defined and _guest.virtinst_options else '' }}
+
+# vim:sw=2:ts=2:et:

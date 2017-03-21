@@ -1,0 +1,46 @@
+---
+# for debug:
+- debug: var=_guest
+
+- name: Check if this libvirt guest was created already
+  command: "virsh dominfo {{ _guest.name }}"
+  ignore_errors: true
+  register: find_libvirt_guest
+
+- name: Ensure working dir to save stuff for this libvirt guest exists
+  file:
+    path: "{{ libvirt_guests_build_dir }}/{{ _guest.name }}"
+    state: directory
+    mode: 0700
+
+- name: Generate scripts to create libvirt guest
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest|default(item.src) }}"
+  with_items:
+    - src: build_libvirt_guest.sh.j2
+      dest: build.sh
+    - src: "{{ _guest.auto_install_script.src }}"
+  when:
+    - find_libvirt_guest|failed
+    - _guest.create
+    - _guest.auto_install_script is defined
+    - _guest.auto_install_script
+    - _guest.auto_install_script.src is defined
+    - _guest.auto_install_script.src
+
+# .. note::
+#    virt is still in preview state.
+#    :seealso: http://docs.ansible.com/ansible/virt_module.html
+#
+- name: Ensure this libvirt guest is in the state wanted
+  virt:
+    name: "{{ _guest.name }}"
+    state: "{{ _guest.state }}"
+  when:
+    - find_libvirt_guest|failed
+    - _guest.create
+    - _guest.state is defined
+    - "{{ _guest.state in ('running', 'shutdown', 'destroyed', 'paused') }}"
+
+# vim:sw=2:ts=2:et:

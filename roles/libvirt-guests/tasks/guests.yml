@@ -1,0 +1,14 @@
+---
+- name: Ensure libvirtd and related servcies are running
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - libvirtd
+
+- include: _create_guests.yml
+  with_items: "{{ libvirt_guests }}"
+  loop_control:
+    loop_var: _guest
+
+# vim:sw=2:ts=2:et:

@@ -1,0 +1,9 @@
+---
+- name: Ensure required packages installed
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - virt-install
+
+# vim:sw=2:ts=2:et:
