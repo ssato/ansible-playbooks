@@ -16,7 +16,7 @@ virt-install \
 --name=${name:?} \
 --check-cpu --hvm --accelerate --noautoconsole \
 --connect={{ _guest.virtinst_connect|default('qemu:///system') }} \
---arch=x86_24 \
+--arch=x86_64 \
 --wait={{ _guest.virtinst_wait|default('10') }} \
 --ram={{ _guest.virtinst_ram|default('1024') }} \
 --cpu={{ _guest.virtinst_cpu|default('host-model-only') }} \
