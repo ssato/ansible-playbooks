@@ -1,6 +1,6 @@
 ---
 - name: Check if libvirt networks are started
-  shell: "virsh net-list | grep -qE '^ {{ _network.name }}[[:blank:]]+(active).*'"
+  shell: "LC_ALL=en_US.UTF-8 virsh net-list | grep -qE '^ {{ _network.name }}[[:blank:]]+(active).*'"
   ignore_errors: true
   register: check_if_libvirt_network_is_active
 
