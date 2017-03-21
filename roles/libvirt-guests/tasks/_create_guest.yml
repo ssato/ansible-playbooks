@@ -30,6 +30,11 @@
     - _guest.auto_install_script.src is defined
     - _guest.auto_install_script.src
 
+- name: Build the libvirt guest
+  shell: "bash -x ./build.sh"
+  args:
+    chdir: "{{ libvirt_guests_build_dir }}/{{ _guest.name }}/"
+
 # .. note::
 #    virt is still in preview state.
 #    :seealso: http://docs.ansible.com/ansible/virt_module.html
