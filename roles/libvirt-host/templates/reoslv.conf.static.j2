@@ -1,0 +1,2 @@
+search {{ libvirt_networks|selectattr('domain')|join(' ') }}
+nameserver 127.0.0.1

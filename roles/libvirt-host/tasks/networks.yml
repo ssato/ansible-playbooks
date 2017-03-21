@@ -31,4 +31,10 @@
       dns=dnsmasq
   notify: "Restart NetworkManager"
 
+# Put static resolv.conf just in case
+- name: Ensure static resolv.conf exists
+  template:
+    src: resolv.conf.static.j2
+    dest: /etc/resolv.conf.static
+
 # vim:sw=2:ts=2:et:
