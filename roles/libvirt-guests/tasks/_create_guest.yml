@@ -21,6 +21,7 @@
     - src: build_libvirt_guest.sh.j2
       dest: build.sh
     - src: "{{ _guest.auto_install_script.src }}"
+      dest: "{{ _guest.auto_install_script.dest }}"
   when:
     - find_libvirt_guest|failed
     - _guest.create
