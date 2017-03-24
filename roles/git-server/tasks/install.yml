@@ -2,7 +2,7 @@
 - name: Ensure git server and related packages installed
   package:
     name: "{{ item }}"
-    state: installed
+    state: present
   with_items:
     - httpd
     - gitweb
