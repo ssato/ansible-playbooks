@@ -1,23 +1,39 @@
 ---
+- name: Ensure dedicated git group exists
+  group:
+    name: "{{ git.group|default('git') }}"
+
 - name: Ensure dedicated git user exists
   user:
-    name: git
-    createhome: no
+    name: "{{ git.user|default('git') }}"
+    group: "{{ git.group|default('git') }}"
     generate_ssh_key: yes
     shell: /usr/bin/git-shell
 
 - name: Ensure git repos root dir exists
   file:
-    path: "{{ git.root|default('/var/lib/git') }}"
+    path: "{{ git.root }}"
     state: directory
     mode: "0775"
-    owner: git
-    group: git
+    owner: "{{ git.user|default('git') }}"
+    group: "{{ git.group|default('git') }}"
+    setype: git_content_t
 
 - name: Ensure git repos initialized
   git:
     bare: yes
     dest: "{{ item.dest }}"
+    repo: "{{ item.repo|default(item.dest) }}"
   with_items: "{{ git.repos|selectattr('dest')|list }}"
+
+- name:
+  lineinfile:
+    dest: /etc/gitweb.conf
+    line: "our $projectroot = '{{ git.root }}';"
+
+- name: Ensure httpd is running
+  service:
+    name: httpd
+    state: running
 
 # vim:sw=2:ts=2:et:
