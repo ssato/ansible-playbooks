@@ -19,11 +19,24 @@
     group: "{{ git.group|default('git') }}"
     setype: git_content_t
 
-- name: Ensure git repos initialized
+- name: Ensure git bare repos initialized
+  shell: "test -d {{ item.dest }} || git init --bare --shared {{ item.dest }}"
+  with_items: "{{ git.repos|rejectattr('repo')|list }}"
+
+- name: Ensure git remote repos initialized
   git:
-    bare: yes
+    repo: "{{ item.repo }}"
     dest: "{{ item.dest }}"
-    repo: "{{ item.repo|default(item.dest) }}"
+    update: yes
+  with_items: "{{ git.repos|selectattr('repo')|list }}"
+
+- name: Ensure git repos exported
+  file:
+    path: "{{ item.dest }}/git-daemon-export-ok"
+    mode: "0644"
+    owner: "{{ git.user|default('git') }}"
+    group: "{{ git.group|default('git') }}"
+    state: touch
   with_items: "{{ git.repos|selectattr('dest')|list }}"
 
 - name:
