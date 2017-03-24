@@ -1,0 +1,23 @@
+---
+- name: Ensure dedicated git user exists
+  user:
+    name: git
+    createhome: no
+    generate_ssh_key: yes
+    shell: /usr/bin/git-shell
+
+- name: Ensure git repos root dir exists
+  file:
+    path: "{{ git.root|default('/var/lib/git') }}"
+    state: directory
+    mode: "0775"
+    owner: git
+    group: git
+
+- name: Ensure git repos initialized
+  git:
+    bare: yes
+    dest: "{{ item.dest }}"
+  with_items: "{{ git.repos|selectattr('dest')|list }}"
+
+# vim:sw=2:ts=2:et:

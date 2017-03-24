@@ -1,0 +1,11 @@
+---
+- name: Ensure git server and related packages installed
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - httpd
+    - gitweb
+    - git
+
+# vim:sw=2:ts=2:et:

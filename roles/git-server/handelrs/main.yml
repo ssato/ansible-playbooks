@@ -1,0 +1,6 @@
+---
+- name: Reload Httpd
+  service:
+    name: "{{ httpd.service|default('httpd') }}"
+    state: reloaded
+

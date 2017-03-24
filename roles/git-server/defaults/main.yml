@@ -1,0 +1,12 @@
+---
+git:
+  root: &git_root /var/lib/git
+  #user: jdoe
+  #group: gitweb
+  repos:
+    #- dest: /var/lib/git/a/ansible-playbooks.git
+
+gitweb:
+  projectroot: *git_root
+
+# vim:sw=2:ts=2:et:
