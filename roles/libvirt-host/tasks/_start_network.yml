@@ -3,6 +3,7 @@
   shell: "LC_ALL=en_US.UTF-8 virsh net-list | grep -qE '^ {{ _network.name }}[[:blank:]]+(active).*'"
   ignore_errors: true
   register: check_if_libvirt_network_is_active
+  changed_when: false
 
 - name: Start libvirt netwrok
   command: "virsh net-start {{ _network.name }}"
@@ -15,6 +16,7 @@
   command: "test -L /etc/libvirt/qemu/networks//autostart/{{ _network.name }}.xml"
   ignore_errors: true
   register: check_if_libvirt_network_is_autostart
+  changed_when: false
 
 - name: Set autostart libvirt netwrok
   command: "virsh net-autostart {{ _network.name }}"
