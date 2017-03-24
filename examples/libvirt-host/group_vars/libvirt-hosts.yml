@@ -64,8 +64,9 @@ git:
   group: git
   repos:
     - dest: /var/lib/git/a/ansible-playbooks.git
+      repo: false
     - dest: /var/lib/git/b/ansible-examples.git
-      src: https://github.com/ansible/ansible-examples.git
+      repo: https://github.com/ansible/ansible-examples.git
 
 gitweb:
   projectroot: *git_root
