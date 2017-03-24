@@ -1,8 +1,8 @@
 ---
 git:
   root: &git_root /var/lib/git
-  #user: jdoe
-  #group: gitweb
+  user: git
+  group: git
   repos:
     #- dest: /var/lib/git/a/ansible-playbooks.git
 
