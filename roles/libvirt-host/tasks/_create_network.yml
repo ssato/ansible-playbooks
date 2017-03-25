@@ -10,6 +10,7 @@
   command: "virsh net-info {{ _network.name }}"
   ignore_errors: true
   register: find_libvirt_network
+  changed_when: false
 
 - name: Install libvirt netowrk XML file
   template:
@@ -22,6 +23,7 @@
 
 - name: Define libvirt netwrok from XML file installed before
   command: "virsh net-define /etc/libvirt/qemu/networks/{{ _network.name }}.xml"
+  changed_when: false
   when:
     - find_libvirt_network|failed
     - _network.create

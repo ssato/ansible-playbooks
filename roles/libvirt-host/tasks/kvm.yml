@@ -6,6 +6,7 @@
   command: "grep -q -E '^flags.* (vmx|svm) .*' /proc/cpuinfo"
   ignore_errors: true
   register: is_nested_kvm_supported
+  changed_when: false
 
 - name: Set virt related facts
   set_fact:
@@ -29,6 +30,7 @@
   shell: "test \"$(cat /sys/module/kvm_*/parameters/nested)\" = '1'"
   ignore_errors: true
   register: check_if_nested_kvm_is_enabled
+  changed_when: false
   when:
     - enable_nested_kvm
 
