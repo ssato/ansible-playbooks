@@ -84,6 +84,8 @@ httpd
 test -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release && \
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release || :
 
+{{ _guest.ks_post|default('') }}
+
 f=/root/.bashrc
 test -f $f && \
 echo "export LC_ALL=en_US.UTF-8" >> $f || \
