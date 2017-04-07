@@ -2,15 +2,15 @@
 # @see https://fedoraproject.org/wiki/How_to_enable_nested_virtualization_in_KVM
 # @see https://github.com/redhat-openstack/ansible-role-tripleo-parts/blob/master/parts/kvm/tasks/main.yml (Apache License)
 
-- name: Check if Nested KVM is supported
+- name: Check if KVM is supported
   command: "grep -q -E '^flags.* (vmx|svm) .*' /proc/cpuinfo"
   ignore_errors: true
-  register: is_nested_kvm_supported
+  register: is_kvm_supported
   changed_when: false
 
 - name: Set virt related facts
   set_fact:
-    enable_nested_kvm: "{{ is_nested_kvm_supported|succeeded }}"
+    enable_nested_kvm: "{{ is_kvm_supported|succeeded }}"
     cpu_vendor: "{{ ansible_processor[0] | regex_replace('(Genuine|Authentic)', '') | lower }}"
 
 - name: Enable Nested KVM support statically
