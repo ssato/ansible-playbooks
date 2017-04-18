@@ -1,0 +1,32 @@
+---
+iso_dir: /root/setup/
+repos_dir: /var/www/html/pub
+
+local_repos:
+  - iso: rhel-server-7.3-x86_64-dvd.iso
+    id: rhel-server-7.3-x86_64-iso
+
+  - iso: RHUI-3.0-RHEL-7-20170127.1-RHUI-x86_64-dvd1.iso
+    id: rhui-3.0-iso
+
+  - iso: rhgs-3.2-rhel-7-x86_64-dvd-1.iso
+    id: rhgs-3.2-iso
+    disabled: yes
+
+gluster:
+  brick: /export/brick
+  volume: rhui_content_0
+
+rhui:
+  #lb:
+  #  hostname: cds.example.com
+  #rhua:
+  #  hostname: rhua.example.com
+  certs:
+    country: JP
+    state: Tokyo
+    city: Shibuya-ku
+  #  org:
+  installer_log: /root/setup/rhui-installer.log
+
+# vim:sw=2:ts=2:et:
