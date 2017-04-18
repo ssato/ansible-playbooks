@@ -1,0 +1,5 @@
+[{{ repo.id }}]
+name={{ repo.id|replace("-", " ")|upper }}
+baseurl=http://{{ rhua.hostname }}/{{ repos_subdir|default('pub') }}/{{ repo.id }}
+enabled={{ '0' if repo.disabled is defined and repo.disabled else '1' }}
+gpgcheck=1

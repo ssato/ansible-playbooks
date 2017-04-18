@@ -1,0 +1,10 @@
+common_specs:
+  min_nprocs: 2  # ansible_processor_vcpus >= this
+  min_ram: 4096  # ansible_memtotal_mb >= this
+
+rhua_specs:
+
+cds_specs:
+  min_disk_size: 100  # ansible_mounts[.mount=<brick_mnt_point>].size_available >= this
+
+# vim:sw=2:ts=2:et:

@@ -1,0 +1,11 @@
+---
+- fail:
+    msg: "This is not the OS which RHUI supports. It must be RHEL 7."
+  when:
+    - ansible_distribution != "RedHat"
+    - ansible_distribution_major_version != "7"
+
+- name: Check if httpd is installed
+  command: rpm -q httpd
+
+# vim:sw=2:ts=2:et:

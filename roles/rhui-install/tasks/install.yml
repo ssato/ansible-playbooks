@@ -1,0 +1,15 @@
+#
+# Prerequisites:
+# - Local yum repos using RHEL, RHUI and RHGS (Gluster Storage) ISO images.
+# 
+---
+- name: Ensure RHUI rpms installed
+  yum:
+    name: "{{ item }}"
+    state: present
+    enablerepo: "{% for repo in local_repos if repo.disabled is defined and repo.disabled %}{{ repo.id }}{{ ',' if not loop.last else '' }}{% endfor %}"
+  with_items:
+    - rhui-installer
+    - glusterfs-fuse
+
+# vim:sw=2:ts=2:et:

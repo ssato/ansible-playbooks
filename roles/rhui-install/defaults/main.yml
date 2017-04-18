@@ -1,6 +1,7 @@
 ---
 iso_dir: /root/setup/
 repos_dir: /var/www/html/pub
+repos_subdir: pub
 
 local_repos:
   - iso: rhel-server-7.3-x86_64-dvd.iso
@@ -18,15 +19,17 @@ gluster:
   volume: rhui_content_0
 
 rhui:
-  #lb:
+  lb:
   #  hostname: cds.example.com
-  #rhua:
+    hostname:
+  rhua:
   #  hostname: rhua.example.com
+    hostname:
   certs:
     country: JP
     state: Tokyo
     city: Shibuya-ku
-  #  org:
+    org:
   installer_log: /root/setup/rhui-installer.log
 
 # vim:sw=2:ts=2:et:

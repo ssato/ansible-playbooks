@@ -1,0 +1,52 @@
+#
+# Prerequisites:
+# - RHEL, RHUI and RHGS (Gluster Storage) ISO images in 'iso_dir'.
+# 
+# Setup yum repos:
+#
+# 1. RHEL: a or b
+#    a. Setup another www server and make it providing loop back mounted RHEL ISO repo
+#    b. Put RHEL ISO somewhere on RHUA and make it accessible from RHUA, CDS and LB nodes
+#       e.g. install httpd during kickstart installation, start httpd (systemclt start httpd),
+#       mkdir -p /var/www/html/pub/rhel-7.3-iso/ && mount -o ro,loop /path/to/rhel-7.3.iso /var/www/...,
+#       arrange yum repo file for RHEL repo.      
+#
+# 2. RHUI:
+#    0) Download ISO image from RH site:
+#       https://access.redhat.com/downloads/content/147/ver=3/rhel---7/3.0/x86_64/product-software/
+#    1) mount -o ro,loop <RHUI_3_0.iso> /mnt
+#    2) cd /mnt && ./setup_package_repos
+#    3) mkdir -p /var/www/html/pub/rhui-3.0-iso/ && mount -o bind /opt/rhui/ /var/www/...
+#    4) arrange yum repo file for RHUI repo
+#
+# 3. RH Gluster FS
+#    0) Download ISO image from RH site:
+#       https://access.redhat.com/downloads/content/186/ver=3.1/rhel---7/3.2/x86_64/product-software
+#    1) mkdir -p /var/www/html/pub/rhgs/3.2/ && mount -o ro,loop <RHGS iso> /var/www/...
+#    2) arrange yum repo file for RH GlusterFS repo
+#
+---
+- name: Ensure httpd is running
+  service:
+    name: httpd
+    enabled: yes
+    state: started
+
+- name: Ensure repo dirs exist
+  file:
+    path: "{{ repos_dir }}/{{ item.id }}"
+    state: directory
+  with_items: "{{ local_repos }}"
+
+- name: Ensure ISO images mounted
+  shell: "mount | grep {{ item.iso }} || mount -o ro,loop {{ item.iso }} {{ repos_dir }}/{{ item.id }}/"
+  changed_when: false
+  with_items: "{{ local_repos }}"
+
+- name: Ensure Repo files exist
+  template:
+    src: yum_repo_file.j2
+    dest: "/etc/yum.repos.d/{{ item.id }}.repo"
+  with_items: "{{ local_repos }}"
+
+# vim:sw=2:ts=2:et:
