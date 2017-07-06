@@ -5,6 +5,10 @@
     - ansible_distribution != "RedHat"
     - ansible_distribution_major_version != "7"
 
+- name: Check if SELinux is enabled
+  command: test `getenforce` = "Enforcing"
+  changed_when: false
+
 - name: Check if httpd is installed
   command: rpm -q httpd
 

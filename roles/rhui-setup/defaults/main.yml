@@ -1,0 +1,29 @@
+---
+glusterfs:
+  brick: /export/brick
+  volume: rhui_content_0
+
+rhui:
+  lb:
+  #  hostname: cds.example.com
+    hostname:
+  rhua:
+  #  hostname: rhua.example.com
+    hostname:
+  cds: []
+  # - cds-0.example.com
+  # - cds-1.example.com
+  certs:
+    country: JP
+    state: Tokyo
+    city: Shibuya-ku
+    org:
+  installer_log: /root/setup/rhui-installer.log
+
+  repos:
+    - rhel-6-server-rhui-rpms-6Server-x86_64
+    - rhel-6-server-rhui-optional-rpms-6Server-x86_64
+    - rhel-7-server-rhui-rpms-7Server-x86_64
+    - rhel-7-server-rhui-optional-rpms-7Server-x86_64
+
+# vim:sw=2:ts=2:et:
