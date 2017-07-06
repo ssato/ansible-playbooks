@@ -1,0 +1,12 @@
+---
+- name: Setup yum repo file for the repo
+  template:
+    src: "{{ item.template }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - template: yum.repo.j2
+      dest: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}.repo"
+    - template: yum.local.repo.j2
+      dest: "/etc/yum.repos.d/{{ _repo.id }}.repo"
+
+# vim:sw=2:ts=2:et:
