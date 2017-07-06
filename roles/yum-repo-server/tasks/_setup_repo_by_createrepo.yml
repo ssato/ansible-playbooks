@@ -1,0 +1,13 @@
+---
+- name: Copy RPMs into this yum repo
+  copy:
+    src: "{{ item }}"
+    dest: "{{ repo_dir }}"
+    force: false
+  with_glob_items: "{{ _repo.rpms }}"
+
+- name: Generate Yum repo metadata by createrepo
+  command: "createrepo --update {{ '--checksum %s' % _repo.checksum if _repo.checksum|default('false') }} --deltas {{ repo_dir }}"
+  changed_when: false
+
+# vim:sw=2:ts=2:et:
