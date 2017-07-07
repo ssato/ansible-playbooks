@@ -5,4 +5,13 @@
   roles:
     - setup-yum-repos
 
+- name: Check result
+  hosts: libvirt-hosts
+  remote_user: root
+  tasks:
+    - command: yum repolist
+      register: res
+
+    - debug: var=res
+
 # vim:sw=2:ts=2:et:
