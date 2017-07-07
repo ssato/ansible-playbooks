@@ -1,6 +1,6 @@
 [{{ _repo.id }}]
 name={{ _repo.name is defined and _repo.name or _repo.id }}
-baseurl=http://{{ yum_repo_server }}/{{ httpd.repos_subdir }}/{{ _repo.id }}
+baseurl=http://{{ repo_server }}/{{ httpd.repos_subdir }}/{{ _repo.id }}
 #metadata_expire=1h
 enabled=1
 skip_if_unavailable=True

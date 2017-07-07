@@ -1,32 +1,82 @@
 ---
 - debug: var=_repo
-- assert:
-    that:
-      - _repo.id is defined
-      - _repo.id
-    msg: "<repo> in 'yum_repos' must have non empty 'id' parameter"
 
-- set_fact:
-    repo_dir: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}"
-
-- include: _setup_repo_with_iso_images.yml
+- name: Ensure the iso image to provide the contents of the yum repo exists
+  copy:
+    src: "{{ _repo.src }}"
+    dest: "{{ _repo.iso_path }}"
+    force: false
   when:
     - _repo.iso_path is defined
     - _repo.iso_path
 
-- include: _setup_repo_by_reposync.yml
+- name: Ensure the iso image is mounted automatically
+  mount:
+    fstype: iso9660
+    opts: ro,loop
+    # ansible < 2.3
+    name: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}"
+    # ansible >= 2.3
+    # path: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}"
+    src: "{{ _repo.iso_path }}"
+    state: mounted
+  when:
+    - _repo.iso_path is defined
+    - _repo.iso_path
+    - _repo.id is defined
+    - _repo.id
+
+# Alternative of the above task if 'preview' modules are excluded from use.
+#
+# - name: Ensure repo's dir exists for the repo
+#   file:
+#     path: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}"
+#     state: directory
+#     # mode: 0755  # It looks failed if it's already exists and mounted isos under it.
+#   when:
+#     - _repo.id is defined
+#     - _repo.id
+#
+# - name: Setup mount for the iso image for the repo
+#   lineinfile:
+#     dest: /etc/fstab
+#     state: present
+#     regexp: "^{{ _repo.iso_path }}"
+#     line: "{{ _repo.iso_path }} {{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }} iso9660 ro,loop 0 0"
+#   when:
+#     - _repo.iso_path is defined
+#     - _repo.iso_path
+#     - _repo.id is defined
+#     - _repo.id
+#
+# - name: Mount the iso image for the repo
+#   shell: "mount | grep -q {{ _repo.iso_path }} || mount {{ _repo.iso_path }}"
+#   when:
+#     - _repo.iso_path is defined
+#     - _repo.iso_path
+
+- name: Synchronize this yum repo
+  command: "reposync --newest-only
+              --download_path={{ httpd.www_root }}/{{ httpd.repos_subdir }}/
+              --repoid={{ _repo.id }}"
+  changed_when: false
   when:
     - _repo.type is defined
-    - _repo.type == 'reposync'
+    - "{{ _repo.type == 'reposync' }}"
+    - _repo.id is defined
+    - _repo.id
 
-- include: _setup_repo_by_createrepo.yml
+- name: Setup yum repo file for the repo
+  template:
+    src: "{{ item.template }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - template: yum.repo.j2
+      dest: "{{ httpd.www_root }}/{{ httpd.repos_subdir }}/{{ _repo.id }}.repo"
+    - template: yum.local.repo.j2
+      dest: "/etc/yum.repos.d/{{ _repo.id }}.repo"
   when:
-    - _repo.type is defined
-    - _repo.type == 'createrepo'
-    - _repo.rpms is defined
-    - _repo.rpms
-    - _repo.rpms|sequence
-
-- include: _create_yum_repo_file.yml
+    - _repo.id is defined
+    - _repo.id
 
 # vim:sw=2:ts=2:et:

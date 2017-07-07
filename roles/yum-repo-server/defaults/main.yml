@@ -1,6 +1,6 @@
 ---
-yum_repo_server:
-# yum_repo_server: ansible.example.com
+repo_server:
+# repo_server: ansible.example.com
 
 httpd:
   packages:
@@ -13,7 +13,7 @@ httpd:
   www_root: /var/www/html
   repos_subdir: pub
 
-yum_repos:
+repos:
 #  # id: Repo's ID, type: iso (image) or reposync, src: Local iso image path
 #  # (type=iso only), iso_path: Remote iso image path (type=iso only)
 #

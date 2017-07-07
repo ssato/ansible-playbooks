@@ -1,8 +1,0 @@
----
-- name: Synchronize this yum repo
-  command: "reposync --newest-only
-              --download_path={{ httpd.www_root }}/{{ httpd.repos_subdir }}/
-              --repoid={{ _repo.id }}"
-  changed_when: false
-
-# vim:sw=2:ts=2:et:

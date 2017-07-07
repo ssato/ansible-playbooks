@@ -5,7 +5,7 @@
     state: started
 
 - include: _setup_repo.yml
-  with_items: "{{ yum_repos }}"
+  with_items: "{{ repos }}"
   loop_control:
     loop_var: _repo
 
