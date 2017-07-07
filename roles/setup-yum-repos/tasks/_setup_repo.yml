@@ -11,7 +11,7 @@
     yum_repo_datadir: "{{ _repo.datadir|default(yum_repos_datadir) }}/{{ _repo.id }}"
 
 - set_fact:
-    yum_repo_baseurl: "file:///{{ yum_repo_datadir }}"
+    yum_repo_baseurl: "file://{{ yum_repo_datadir }}"
 
 - name: Ensure the repo dir exists
   file:
