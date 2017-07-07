@@ -1,0 +1,38 @@
+---
+- debug: var=_repo
+
+- assert:
+    that:
+      - _repo.id is defined
+      - _repo.id
+    msg: "Each repo must have 'id' parameter defined to identify it"
+
+- set_fact:
+    yum_repo_datadir: "{{ _repo.datadir|default(yum_repos_datadir) }}/{{ _repo.id }}"
+
+- set_fact:
+    yum_repo_baseurl: "file:///{{ yum_repo_datadir }}"
+
+- name: Ensure the repo dir exists
+  file:
+    path: "{{ yum_repo_datadir }}"
+    state: directory
+
+- include: _setup_repo_with_iso_image.yml
+  when:
+    - _repo.type == 'iso'
+    - _repo.src is defined and _repo.src
+    - _repo.dest is defined and _repo.dest
+
+- include: _setup_repo_by_createrepo.yml
+  when:
+    - _repo.type == 'createrepo'
+    - _repo.src is defined and _repo.src
+
+- include: _setup_repo_by_reposync.yml
+  when:
+    - _repo.type == 'reposync'
+
+- include: _create_repo_file.yml
+
+# vim:sw=2:ts=2:et:

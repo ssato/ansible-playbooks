@@ -1,0 +1,7 @@
+---
+- include: _setup_repo.yml
+  with_items: "{{ yum_repos }}"
+  loop_control:
+    loop_var: _repo
+
+# vim:sw=2:ts=2:et:

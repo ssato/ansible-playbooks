@@ -1,0 +1,16 @@
+- assert:
+    that:
+      - yum_repo_datadir is defined and yum_repo_datadir
+
+- name: Ensure required packages installed
+  package:
+    name: yum-utils   # reposync
+    state: installed
+
+- name: Synchronize this yum repo
+  command: "reposync --newest-only
+                     --download_path {{ yum_repo_datadir }}/
+                     --repoid {{ _repo.id }}"
+  changed_when: false
+
+# vim:sw=2:ts=2:et:
