@@ -1,0 +1,50 @@
+---
+# Set it true if to make hostnames of guests resolvable.
+libvirt_host_dns_guests_resolvable: false
+
+libvirt_networks:
+  - name: default
+    create: false
+    state: started
+
+# Example:
+#  - name: &net_1_name lab
+#    create: true
+#    state: started
+#
+#    bridge: virbr10
+#    domain: example.com
+#    gw_ip: 192.168.125.1
+#    gw_hostname: ansible
+#    range_start: 192.168.125.128
+#    range_end: 192.168.125.254
+#    hosts:
+#      - ip: &guest_1_ip 192.168.125.101
+#        hostname: &guest_1_hostname web01
+#        mac: &guest_1_mac "52:54:00:12:51:01"
+#      - ip: &guest_2_ip 192.168.125.102
+#        hostname: &guest_2_hostname web02
+#        mac: &guest_2_mac "52:54:00:12:51:02"
+
+libvirt_guests:
+
+#  - name: web01
+#    description: Web server 01
+#    create: true
+#
+#    hostname: *guest_1_hostname
+#    mac_0: *guest_1_mac
+#    libvirt_network: *net_1_name
+#    disk_0: 20  # [GB]
+#    disk_0_bus: scsi  # virtio-scsi
+#
+#    virtinst_wait: 10
+#    virtinst_ram: 1024
+#    virtinst_vcpus: 1
+#    virtinst_os_variant: rhel7
+#
+#    install_type: kickstart
+#    install_script: rhel-7-web-ks.cfg
+#    install_iso: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+
+# vim:sw=2:ts=2:et:

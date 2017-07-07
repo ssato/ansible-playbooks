@@ -1,0 +1,43 @@
+---
+# :seealso: https://fedoraproject.org/wiki/How_to_enable_nested_virtualization_in_KVM
+# :seealso: https://github.com/redhat-openstack/ansible-role-tripleo-parts/blob/master/parts/kvm/tasks/main.yml (Apache License)
+
+- name: Check if KVM is supported
+  command: "grep -q -E '^flags.* (vmx|svm) .*' /proc/cpuinfo"
+  changed_when: false
+  register: is_kvm_supported
+
+- assert:
+    that:
+      - is_kvm_supported|failed
+    msg: "KVM support is disabled or N/A on this hardware. Check it's configuration first!"
+
+- name: Set virt related facts
+  set_fact:
+    cpu_vendor: "{{ ansible_processor[0] | regex_replace('(Genuine|Authentic)', '') | lower }}"
+
+- name: Enable Nested KVM support statically
+  copy:
+    dest: /etc/modprobe.d/zz-kvm.conf
+    content: |
+      options kvm_intel nested=1
+      options kvm_amd nested=1
+
+# :seealso: http://docs.ansible.com/ansible/modprobe_module.html
+- name: Ensure KVM kernel module is loaded
+  shell: "test -c /dev/kvm || modprobe kvm"
+  changed_when: false
+
+- include: check_nested_kvm.yml
+
+# Try reloading CPU specific KVM kernel module to enable Nested KVM feature.
+- name: Enable Nested KVM support dynamically 
+  shell: "lsmod | grep kvm-{{ cpu_vendor }} && rmmod kvm-{{ cpu_vendor }}; modprobe kvm-{{ cpu_vendor }}"
+  when:
+    - check_if_nested_kvm_is_enabled|failed
+
+- include: check_nested_kvm.yml
+  when:
+    - check_if_nested_kvm_is_enabled|failed
+
+# vim:sw=2:ts=2:et:

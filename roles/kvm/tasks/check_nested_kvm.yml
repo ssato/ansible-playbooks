@@ -1,0 +1,8 @@
+---
+- name: Check if Nested KVM is enabled
+  shell: "test \"$(cat /sys/module/kvm_*/parameters/nested)\" = '1'"
+  changed_when: false
+  ignore_errors: true
+  register: check_if_nested_kvm_is_enabled
+
+# vim:sw=2:ts=2:et:
