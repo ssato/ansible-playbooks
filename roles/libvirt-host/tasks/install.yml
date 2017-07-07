@@ -4,7 +4,6 @@
     name: "{{ item }}"
     state: installed
   with_items:
-    - NetworkManager
     - libvirt
     - libvirt-python
     - libvirt-daemon-kvm

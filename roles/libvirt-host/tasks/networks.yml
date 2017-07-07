@@ -5,7 +5,6 @@
     state: started
   with_items:
     - libvirtd
-    - NetworkManager
 
 - include: _create_network.yml
   with_items: "{{ libvirt_networks }}"
@@ -21,20 +20,5 @@
   with_items: "{{ libvirt_networks }}"
   loop_control:
     loop_var: _network
-
-# @see https://goo.gl/UjGtfw
-- name: Configure local DNS for NetworkManager
-  copy:
-    dest: /etc/NetworkManager/conf.d/90-local_dns.conf
-    content: |
-      [main]
-      dns=dnsmasq
-  notify: "Restart NetworkManager"
-
-# Put static resolv.conf just in case
-- name: Ensure static resolv.conf exists
-  template:
-    src: resolv.conf.static.j2
-    dest: /etc/resolv.conf.static
 
 # vim:sw=2:ts=2:et:

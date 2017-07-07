@@ -2,3 +2,8 @@
 - include: install.yml
 - include: kvm.yml
 - include: networks.yml
+- include: dns.yml
+  when:
+    - libvirt_host_dns_guests_resolvable is defined
+    - libvirt_host_dns_guests_resolvable
+

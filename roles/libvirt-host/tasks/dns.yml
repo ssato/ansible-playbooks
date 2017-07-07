@@ -1,0 +1,29 @@
+---
+- name: Ensure libvirt and related packages installed
+  package:
+    name: NetworkManager
+    state: installed
+
+- name: Ensure related servcies are running
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - NetworkManager
+
+# @see https://goo.gl/UjGtfw
+- name: Configure local DNS for NetworkManager
+  copy:
+    dest: /etc/NetworkManager/conf.d/90-local_dns.conf
+    content: |
+      [main]
+      dns=dnsmasq
+  notify: "Restart NetworkManager"
+
+# Put static resolv.conf just in case
+- name: Ensure static resolv.conf exists
+  template:
+    src: resolv.conf.static.j2
+    dest: /etc/resolv.conf.static
+
+# vim:sw=2:ts=2:et:

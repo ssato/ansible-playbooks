@@ -1,4 +1,7 @@
 ---
+# Set it true if to make hostnames of guests resolvable.
+libvirt_host_dns_guests_resolvable: false
+
 libvirt_networks:
   - name: default
     create: false
