@@ -1,9 +1,0 @@
----
-- name: Ensure required packages installed
-  package:
-    name: "{{ item }}"
-    state: installed
-  with_items:
-    - yum-utils  # reposync
-
-# vim:sw=2:ts=2:et:
