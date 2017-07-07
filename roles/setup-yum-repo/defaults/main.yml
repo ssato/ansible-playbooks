@@ -1,0 +1,30 @@
+---
+yum_repos_datadir: /srv/yum_repos  # Default
+
+yum_repos:
+#  # id: Repo's ID, type: iso (image) or reposync, src: Local iso image path
+#  # (type=iso) or RPMs' path (type=createrepo), dest: iso image install path
+#  # (type=iso only), datadir: repo path [yum_repos_datadir/<repo_id>].
+#
+#  - id: rhel-7.3-server-rpms
+#    type: iso
+#    src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
+#    dest: /var/wwww/html/pub/rhel-server-7.3-x86_64-dvd.iso
+#    datadir: /var/www/html/pub/rhel-7.3-server-rpms
+#    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+#
+#  - id: rhel-7-server-rpms
+#    type: reposync
+#    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+#
+#  - id: rhel-7-server-extras-rpms
+#    type: reposync
+#    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+#
+#  - id: custom-rpmms
+#    type: createrepo
+#    src: files/*.rpm
+#    checksum: sha1
+#
+
+# vim:sw=2:ts=2:et:

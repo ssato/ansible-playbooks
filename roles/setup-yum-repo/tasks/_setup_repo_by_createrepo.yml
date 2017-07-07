@@ -1,0 +1,24 @@
+---
+- assert:
+    that:
+      - _repo.src is defined and _repo.src
+      - yum_repo_datadir is defined and yum_repo_datadir
+
+- name: Copy RPMs to serve
+  copy:
+    src: "{{ item }}"
+    dest: "{{ yum_repo_datadir }}"
+  with_fileglob: "{{ _repo.src }}"
+
+- name: Ensure required packages installed
+  package:
+    name: createrepo
+    state: installed
+
+- name: Initialize the repo by createrepo
+  command: "createrepo -v --update --checkts
+              {{ '--checksum %s' if _repo.checksum|default(false) and _repo.checksum in ('sha1', 'sha256') }}
+              --deltas {{ yum_repo_datadir }}"
+  changed_when: false
+
+# vim:sw=2:ts=2:et:

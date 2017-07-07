@@ -1,0 +1,11 @@
+[{{ _repo.id }}]
+name={{ _repo.name is defined and _repo.name or _repo.id }}
+baseurl={{ yum_repo_baseurl }}
+enabled=1
+{% if _rpeo.gpgkey|default('false') -%}
+gpgkey={{ _repo.gpgkey }}
+gpgcheck=1
+{% else -%}
+gpgcheck=0
+{% endif -%}
+skip_if_unavailable=True
