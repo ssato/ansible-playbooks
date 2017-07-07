@@ -19,6 +19,7 @@
   command: "createrepo -v --update --checkts
               {{ '--checksum %s' if _repo.checksum|default(false) and _repo.checksum in ('sha1', 'sha256') else '' }}
               --deltas ."
+  args:
     chdir: "{{ yum_repo_datadir }}"
   changed_when: false
 
