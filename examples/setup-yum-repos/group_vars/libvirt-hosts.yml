@@ -1,15 +1,13 @@
 ---
-repo_server: ansible.example.com
-
-repos:
+yum_repos:
   - id: rhel-7.3-server-rpms
     type: iso
     src: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
     dest: /var/lib/libvirt/images/rhel-server-7.3-x86_64-dvd.iso
-    datadir: /var/www/html/pub/rhel-7.3-server-rpms
+    datadir: /var/www/html/pub/
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
-  - id: epel
+  - id: nux-misc
     type: reposync
 
   - id: custom-rpms
